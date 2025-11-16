@@ -1,5 +1,5 @@
 @echo off
-setlocal EnableExtensions
+setlocal EnableExtensions EnableDelayedExpansion
 
 REM ========================================
 REM DemograficoBUDA - Windows EXE Builder
