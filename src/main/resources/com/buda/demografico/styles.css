@@ -1,0 +1,36 @@
+@import url("demografico-styles.css");
+
+/* Estilos específicos para a tela de login */
+.login-container {
+    -fx-background-color: linear-gradient(to bottom, #E8F4F8, #D4E9F7);
+    -fx-border-color: rgba(30, 74, 111, 0.15);
+    -fx-border-radius: 14px;
+    -fx-background-radius: 14px;
+}
+
+.login-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-text-fill: #1E4A6F;
+}
+
+.login-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #556A7F;
+}
+
+.login-section-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E4A6F;
+}
+
+.login-field-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #34495E;
+}
+
+.login-message {
+    -fx-text-fill: #C0392B;
+    -fx-font-size: 11px;
+}

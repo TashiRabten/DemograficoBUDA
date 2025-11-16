@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane styleClass="main-background" stylesheets="@glossario-styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.glossariobuda.GlossarioController">
+   <top>
+      <VBox styleClass="header-container" spacing="10.0">
+         <children>
+            <Label fx:id="titleLabel" styleClass="header-title" text="🕉 Glossário de Terminologia Budista" />
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <Label styleClass="field-label" text="Buscar termo:" />
+                  <TextField fx:id="searchField" styleClass="header-input-field" prefWidth="250.0" promptText="Digite um termo em qualquer idioma..." HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                  <Button fx:id="tibetanSearchButton" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="བོད་" onAction="#openTibetanSearchInput">
+                     <tooltip>
+                        <Tooltip text="Abrir entrada de teclado tibetano" />
+                     </tooltip>
+                  </Button>
+                  <ComboBox fx:id="ownerFilter"
+                            promptText="Filtrar por owner"
+                            prefWidth="150"
+                            styleClass="search-combo"/>
+                  <Button fx:id="compactViewButton" styleClass="button,button-navigation" onAction="#openCompactView" text="Vista Compacta" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" />
+         </padding>
+      </VBox>
+   </top>
+   <center>
+      <HBox spacing="10.0">
+         <children>
+            <VBox styleClass="section-container" spacing="5.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label styleClass="section-title" text="Resultados:" />
+                  <ListView fx:id="resultsListView" styleClass="list-view" prefHeight="300.0" prefWidth="350.0" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="loadMoreButton" styleClass="button,button-navigation" onAction="#loadMoreResults" text="Carregar mais resultados" visible="false" maxWidth="Infinity" />
+               </children>
+            </VBox>
+            <VBox styleClass="section-container" spacing="5.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label styleClass="section-title" text="Detalhes do Termo:" />
+                  <TextArea fx:id="detailsArea" styleClass="results-area" editable="false" prefHeight="300.0" prefWidth="350.0" wrapText="true" VBox.vgrow="ALWAYS" />
+                  <!-- Open link button (for PDFs and Audio) - appears when link is detected -->
+                  <Button fx:id="openLinkButton" text="🔗 Abrir Link" onAction="#openMediaLink" styleClass="button,button-navigation" maxWidth="Infinity" managed="false" visible="false" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+   <bottom>
+      <VBox spacing="10.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <Button fx:id="addTermButton" styleClass="button,button-inserir" onAction="#showAddTermDialog" text="Adicionar" />
+                  <Button fx:id="editButton" styleClass="button,button-update" onAction="#editSelectedTerm" text="Editar" />
+                  <Button fx:id="deleteButton" styleClass="button,button-cancel" onAction="#deleteSelectedTerm" text="Deletar" />
+                  <Button fx:id="exportButton" styleClass="button,button-process" onAction="#showExportDialog" text="WhatsApp" />
+                  <Button fx:id="recentButton" styleClass="button,button-navigation" onAction="#showRecentTerms" text="Recentes" />
+                  <Button fx:id="loadXMLButton" styleClass="button,button-inserir" onAction="#loadXMLGlossary" text="Carregar Dados" />
+                  <Button fx:id="syncButton" styleClass="button, button-update" text="Sincronizar" onAction="#syncWithCloud" />
+               </children>
+            </HBox>
+            <!-- Dual status bar: operation status on left, connection status on right -->
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+               <children>
+                  <Label fx:id="operationStatusLabel" styleClass="operation-status-text" text="Pronto" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="connectionStatusLabel" styleClass="connection-status-text" text="🟡 Verificando..." />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+      </VBox>
+   </bottom>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</BorderPane>

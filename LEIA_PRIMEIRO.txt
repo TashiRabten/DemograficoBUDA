@@ -1,0 +1,187 @@
+╔═══════════════════════════════════════════════════════════════════════╗
+║                                                                       ║
+║           DemograficoBUDA - Pesquisa Budista                         ║
+║           Associação BUDA - Coleta de Dados                          ║
+║                                                                       ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+
+🎯 INÍCIO RÁPIDO - 3 PASSOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PASSO 1: CONFIGURAR O SUPABASE
+────────────────────────────────────────────────────────────────────
+   1. Abra: SUPABASE_SETUP.md
+   2. Siga as instruções para criar a tabela no Supabase
+   3. Copie e execute o script SQL fornecido
+
+
+PASSO 2: EXECUTAR O PROGRAMA
+────────────────────────────────────────────────────────────────────
+   WINDOWS:
+   → Duplo-clique em: run.bat
+
+   LINUX/MAC:
+   → Terminal: mvn javafx:run
+
+
+PASSO 3: COMEÇAR A COLETAR DADOS
+────────────────────────────────────────────────────────────────────
+   1. Clique em "Testar Conexão"
+   2. Preencha o formulário
+   3. Clique em "Salvar Entrevista"
+   4. Pronto! 🎉
+
+
+📚 DOCUMENTAÇÃO COMPLETA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 README.md
+   → Documentação técnica completa
+   → Instalação, uso, exportação de dados
+   → Solução de problemas
+
+📖 GUIA_RAPIDO.md
+   → Como usar em 5 passos
+   → Dicas e boas práticas
+   → Guia para pesquisadores
+
+📖 SUPABASE_SETUP.md
+   → Configuração do banco de dados
+   → Script SQL completo
+   → Queries para análise
+
+📖 RESUMO_PROJETO.md
+   → Visão geral do projeto
+   → Funcionalidades implementadas
+   → Próximos passos
+
+
+🔧 PRÉ-REQUISITOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Java JDK 17 ou superior
+✅ Maven 3.6 ou superior
+✅ Conexão com internet (para sincronização)
+
+
+💡 FUNCIONALIDADES PRINCIPAIS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Coleta de dados demográficos
+   → Nome, idade, sexo, tradição budista
+   → Templo, tempo de prática
+   → Mesclou tradições (Sim/Não)
+   → Observações
+
+✅ Armazenamento Dual
+   → Local: SQLite (funciona offline)
+   → Nuvem: Supabase (centralizado)
+
+✅ Sincronização Inteligente
+   → Automática quando online
+   → Manual via botão
+   → Status visual
+
+✅ Estatísticas em Tempo Real
+   → Total local
+   → Não sincronizadas
+   → Total na nuvem
+
+
+🎨 INTERFACE DO USUÁRIO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌────────────────────────────────────────┐
+   │ DemograficoBUDA - Pesquisa Budista     │
+   ├────────────────────────────────────────┤
+   │ Status: 🟢 Conectado                   │
+   ├────────────────────────────────────────┤
+   │ Dados do Entrevistado                  │
+   │ ┌────────────────────────────────────┐ │
+   │ │ Nome: ________________             │ │
+   │ │ Idade: ____                        │ │
+   │ │ Sexo: [▼]                          │ │
+   │ │ Tradição: [▼]                      │ │
+   │ │ Templo: ________________           │ │
+   │ │ Tempo Prática: ____                │ │
+   │ │ Mesclou: ⚪ Sim  ⚫ Não           │ │
+   │ │ Observações: ____________          │ │
+   │ └────────────────────────────────────┘ │
+   │ [Salvar] [Limpar] [Sincronizar]        │
+   ├────────────────────────────────────────┤
+   │ Estatísticas                           │
+   │ Local: 10 | Não Sinc: 0 | Nuvem: 10   │
+   └────────────────────────────────────────┘
+
+
+📊 EXPORTAÇÃO DE DADOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Para análise estatística:
+   1. Acesse: https://app.supabase.com
+   2. Vá em Table Editor
+   3. Clique em Export → CSV
+   4. Abra no Excel, SPSS, R ou Python
+
+
+🆘 AJUDA RÁPIDA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ Não consegue salvar?
+   → Verifique campos obrigatórios
+   → Idade e Tempo devem ser números
+
+❓ Não sincroniza?
+   → Clique em "Testar Conexão"
+   → Verifique internet
+   → Use botão "Sincronizar"
+
+❓ Programa não abre?
+   → Verifique Java 17
+   → Execute: mvn javafx:run
+   → Veja erros no console
+
+
+📁 ESTRUTURA DO PROJETO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DemograficoBUDA/
+├── src/                     → Código fonte
+├── pom.xml                  → Configuração Maven
+├── run.bat                  → Executar (Windows)
+├── README.md                → Documentação completa
+├── GUIA_RAPIDO.md          → Guia de uso
+├── SUPABASE_SETUP.md       → Setup do banco
+└── RESUMO_PROJETO.md       → Visão geral
+
+
+🔐 CREDENCIAIS SUPABASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+URL: https://ctbufeavhuypjdbqmwzb.supabase.co
+Tabela: pesquisa_demografica_budista
+(API Key configurada no código)
+
+
+✅ STATUS DO PROJETO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Código compilado com sucesso
+✅ Todas as funcionalidades implementadas
+✅ Interface JavaFX funcional
+✅ Sincronização Supabase operacional
+✅ Documentação completa
+✅ Pronto para uso! 🎉
+
+
+📞 CONTATO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Para dúvidas ou sugestões:
+→ Entre em contato com a Associação BUDA
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🙏 Desenvolvido com dedicação para a comunidade budista brasileira
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.buda.demografico.VisualizarController"
+      spacing="15"
+      prefWidth="1050" prefHeight="650"
+      styleClass="main-background"
+      stylesheets="@demografico-styles.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Título -->
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header-container">
+        <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+            <Image url="@/icons/pramana.png"/>
+        </ImageView>
+        <Label text="Visualização de Dados - Leituras Budistas" styleClass="header-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="fecharButton" text="Fechar" onAction="#onFechar" styleClass="button-cancel"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Filtros -->
+    <VBox spacing="10">
+        <Label text="Filtros" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="Data Início:" style="-fx-font-size: 12px;"/>
+            <DatePicker fx:id="dataInicioPicker" promptText="Opcional"/>
+
+            <Label text="Data Fim:" style="-fx-font-size: 12px;"/>
+            <DatePicker fx:id="dataFimPicker" promptText="Opcional"/>
+
+            <Button fx:id="filtrarButton" text="Filtrar" onAction="#onFiltrar"
+                    styleClass="primary-button" prefWidth="140"/>
+            <Button fx:id="limparFiltroButton" text="Limpar Filtro" onAction="#onLimparFiltro"
+                    styleClass="button-default" prefWidth="160"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Label fx:id="totalRegistrosLabel" text="Total: 0 registros"
+                   style="-fx-font-weight: bold; -fx-font-size: 12px;"/>
+        </HBox>
+    </VBox>
+
+    <Separator/>
+
+    <!-- Tabela de Dados (por pessoa) -->
+    <TableView fx:id="entrevistadosTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colPessoaId" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="colNome" text="Nome" prefWidth="160"/>
+            <TableColumn fx:id="colIdade" text="Idade" prefWidth="60"/>
+            <TableColumn fx:id="colSexo" text="Sexo" prefWidth="90"/>
+            <TableColumn fx:id="colTradicao" text="Tradição" prefWidth="140"/>
+            <TableColumn fx:id="colTemplo" text="Templo/Centro" prefWidth="150"/>
+            <TableColumn fx:id="colTempoPratica" text="Tempo Prática" prefWidth="110"/>
+            <TableColumn fx:id="colTotalLeituras" text="Qtd Leituras" prefWidth="100"/>
+            <TableColumn fx:id="colResumoLeituras" text="Leituras (resumo)" prefWidth="220"/>
+        </columns>
+    </TableView>
+
+    <Separator/>
+
+    <!-- Rodapé com Ações -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button fx:id="editarButton" text="Visualizar / Editar" onAction="#onEditar"
+                styleClass="button-default" maxWidth="Infinity" prefWidth="200" HBox.hgrow="ALWAYS"/>
+        <Button fx:id="deletarButton" text="Excluir Pessoa" onAction="#onDeletar"
+                styleClass="button-cancel" maxWidth="Infinity" prefWidth="180" HBox.hgrow="ALWAYS"/>
+        <Separator orientation="VERTICAL"/>
+        <Button fx:id="exportarButton" text="Exportar CSV" onAction="#onExportar"
+                styleClass="primary-button" maxWidth="Infinity" prefWidth="160" HBox.hgrow="ALWAYS"/>
+        <Button fx:id="atualizarButton" text="Atualizar" onAction="#onAtualizar"
+                styleClass="button-default" maxWidth="Infinity" prefWidth="140" HBox.hgrow="ALWAYS"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label fx:id="mensagemLabel" text="" style="-fx-text-fill: gray; -fx-font-size: 11px;"/>
+    </HBox>
+
+</VBox>

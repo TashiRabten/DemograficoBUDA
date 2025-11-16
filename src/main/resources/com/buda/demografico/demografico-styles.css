@@ -1,0 +1,138 @@
+/* DemograficoBUDA - esquema de cores inspirado nos assets de /resources/src */
+* {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 13px;
+}
+
+.main-background {
+    -fx-background-color: #88A9CC;
+}
+
+.header-container {
+    -fx-background-color: #4F729A;
+    -fx-padding: 12px 18px;
+    -fx-background-radius: 8px;
+}
+
+.header-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #fdfdfd;
+}
+
+.text-field, .text-area, .combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #9cb6d0;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.text-field:focused, .text-area:focused, .combo-box:focused {
+    -fx-border-color: #4d6c8d;
+    -fx-border-width: 2px;
+    -fx-background-color: #f4f8fc;
+}
+
+.button {
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+    -fx-text-fill: #ffffff;
+}
+
+.primary-button {
+    -fx-background-color: linear-gradient(to bottom, #E18A23, #B7650F);
+}
+
+.primary-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #F19A32, #C67421);
+}
+
+.button-default {
+    -fx-background-color: linear-gradient(to bottom, #5E7DA7, #3F597A);
+}
+
+.button-secondary {
+    -fx-background-color: linear-gradient(to bottom, #F5E28F, #C9AA63);
+    -fx-text-fill: #4B3613;
+}
+
+.button-accent {
+    -fx-background-color: linear-gradient(to bottom, #7A5EA7, #573B81);
+}
+
+.button-cancel {
+    -fx-background-color: linear-gradient(to bottom, #D15C54, #A7342D);
+}
+
+.button:disabled {
+    -fx-opacity: 0.65;
+}
+
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #b9c9d8;
+    -fx-border-radius: 6px;
+    -fx-padding: 4px;
+    -fx-selection-bar: transparent;
+    -fx-selection-bar-non-focused: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: linear-gradient(to bottom, #607EA3, #445A77);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:filled:selected,
+.table-row-cell:filled:selected:focused,
+.table-row-cell:filled:selected .table-cell,
+.table-row-cell:filled:selected:focused .table-cell {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-text-fill: inherit;
+}
+
+.table-row-cell:selected {
+    -fx-border-color: rgba(79, 114, 154, 0.85);
+    -fx-border-width: 1px 0 1px 0;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-border-color: transparent;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: rgba(136, 169, 204, 0.3);
+}
+
+.stats-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #32455D;
+}
+
+.stats-value {
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: #32455D;
+}
+
+.stats-value.warning {
+    -fx-text-fill: #E67E22;
+}
+
+.stats-value.success {
+    -fx-text-fill: #2E7D32;
+}
+
+.footer-message {
+    -fx-text-fill: #2D3F55;
+    -fx-font-size: 11px;
+}

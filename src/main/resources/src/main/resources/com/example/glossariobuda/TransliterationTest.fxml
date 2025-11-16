@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.glossariobuda.TransliterationTestController"
+            prefWidth="600" prefHeight="400">
+
+    <center>
+        <VBox spacing="12" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <Label text="Sanskrit Transliteration Test Panel"
+                   style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" minWidth="150"/>
+                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <!-- Input -->
+                <Label text="Input (SLP1 or IAST):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="inputField" promptText="e.g., AtmA, dharmaḥ"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <!-- Buttons -->
+                <Label text=" " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <Button text="SLP1 → IAST" onAction="#convertSlp1ToIast"/>
+                    <Button text="IAST → Devanāgarī" onAction="#convertIastToDevanagari"/>
+                    <Button text="Devanāgarī → Latin" onAction="#convertDevanagariToLatin"/>
+                </HBox>
+
+                <!-- Output fields -->
+                <Label text="IAST Output:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="iastField" editable="false"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Devanāgarī Output:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="devanagariField" editable="false"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="Latin Back-Conversion:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="latinField" editable="false"
+                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <Separator/>
+
+            <!-- Results -->
+            <Label text="Test Results:" style="-fx-font-weight: bold;"/>
+            <TextArea fx:id="resultArea" prefRowCount="6" wrapText="true"/>
+
+        </VBox>
+    </center>
+</BorderPane>

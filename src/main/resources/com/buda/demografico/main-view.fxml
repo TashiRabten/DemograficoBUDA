@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.buda.demografico.MainController"
+      spacing="8"
+      prefWidth="750" prefHeight="600"
+      styleClass="main-background"
+      stylesheets="@demografico-styles.css">
+    <padding>
+        <Insets top="10" right="15" bottom="10" left="15"/>
+    </padding>
+
+    <!-- Título -->
+    <HBox alignment="CENTER" spacing="8" styleClass="header-container">
+        <ImageView fitHeight="30" fitWidth="30" preserveRatio="true">
+            <Image url="@/icons/BUDA.png"/>
+        </ImageView>
+        <Label text="DemograficoBUDA - Leituras Budistas" styleClass="header-title"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Status de Conexão e Data -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="Status:"/>
+        <Label fx:id="statusLabel" text="Desconectado" style="-fx-text-fill: red;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Data da Entrevista:"/>
+        <DatePicker fx:id="dataEntrevistaPicker" prefWidth="150"/>
+        <Button fx:id="testarConexaoButton" text="Testar Conexão" onAction="#onTestarConexao"
+                styleClass="button-default"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Formulário de Coleta -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox spacing="10">
+            <padding>
+                <Insets right="8"/>
+            </padding>
+
+            <Label text="Dados do Entrevistado" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+
+            <GridPane hgap="15" vgap="8">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="160" prefWidth="160"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <!-- Nome -->
+                <Label text="Nome Completo:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="nomeField" promptText="Digite o nome completo"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <!-- Idade -->
+                <Label text="Idade:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="idadeField" promptText="Ex: 35"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <!-- Sexo -->
+                <Label text="Sexo/Gênero:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="sexoCombo" promptText="Selecione ou digite..."
+                          GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="Infinity" editable="true"/>
+
+                <!-- Tradição -->
+                <Label text="Tradição Budista:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="tradicaoCombo" promptText="Selecione ou digite..."
+                          GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity" editable="true"/>
+
+                <!-- Templo -->
+                <Label text="Templo/Centro:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="temploField" promptText="Nome do templo ou centro (opcional)"
+                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <!-- Tempo de Prática -->
+                <Label text="Tempo de Prática (anos):" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="tempoPraticaField" promptText="Ex: 5"
+                           GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <Separator/>
+
+            <!-- Seção de Leituras -->
+            <Label text="Dados sobre Leitura" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #8b4513;"/>
+
+            <GridPane hgap="15" vgap="8">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="160" prefWidth="160"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+
+                <!-- Tipo de Leitura -->
+                <Label text="Tipo de Leitura:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="tipoLeituraCombo" promptText="Selecione ou digite..."
+                          GridPane.rowIndex="0" GridPane.columnIndex="1" maxWidth="Infinity" editable="true"/>
+
+                <!-- Título da Obra -->
+                <Label text="Título da Obra:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="tituloObraField" promptText="Ex: O Caminho do Bodhisattva"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <!-- Autor -->
+                <Label text="Autor:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="autorField" promptText="Ex: Shantideva"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <!-- Idioma de Leitura -->
+                <Label text="Idioma de Leitura:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="idiomaLeituraCombo" promptText="Selecione ou digite..."
+                          GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity" editable="true"/>
+
+                <!-- Frequência de Leitura -->
+                <Label text="Frequência de Leitura:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <ComboBox fx:id="frequenciaLeituraCombo" promptText="Selecione ou digite..."
+                          GridPane.rowIndex="4" GridPane.columnIndex="1" maxWidth="Infinity" editable="true"/>
+
+                <!-- Observações -->
+                <Label text="Observações:" GridPane.rowIndex="5" GridPane.columnIndex="0"
+                       GridPane.valignment="TOP">
+                    <padding>
+                        <Insets top="10"/>
+                    </padding>
+                </Label>
+                <TextArea fx:id="observacoesArea" promptText="Observações adicionais (opcional)"
+                          GridPane.rowIndex="5" GridPane.columnIndex="1"
+                          prefRowCount="3" wrapText="true"/>
+            </GridPane>
+        </VBox>
+    </ScrollPane>
+
+    <Separator/>
+
+    <!-- Botões de Ação (Fixos na parte inferior) -->
+        <HBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="10" bottom="8"/>
+            </padding>
+            <Button fx:id="salvarButton" text="Salvar Leitura" onAction="#onSalvar"
+                    styleClass="primary-button"
+                    maxWidth="Infinity" prefHeight="32" HBox.hgrow="ALWAYS"
+                    style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+            <Button fx:id="limparCamposLeituraButton" text="Limpar Leitura" onAction="#onLimparCamposLeitura"
+                    styleClass="button-secondary"
+                    maxWidth="Infinity" prefHeight="32" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="limparTudoButton" text="Limpar Tudo" onAction="#onLimparTudo"
+                    styleClass="button-default"
+                    maxWidth="Infinity" prefHeight="32" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="visualizarDadosButton" text="Visualizar Dados" onAction="#onVisualizarDados"
+                    styleClass="button-default"
+                    maxWidth="Infinity" prefHeight="32" HBox.hgrow="ALWAYS" style="-fx-font-weight: bold;"/>
+            <Button fx:id="sincronizarButton" text="Sincronizar" onAction="#onSincronizar"
+                    styleClass="button-accent"
+                    maxWidth="Infinity" prefHeight="32" HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+    <!-- Estatísticas Compactas -->
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="5" bottom="5"/>
+        </padding>
+        <Label text="Locais:" style="-fx-font-size: 11px;"/>
+        <Label fx:id="totalLocalLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+        <Separator orientation="VERTICAL"/>
+        <Label text="Não Sincronizadas:" style="-fx-font-size: 11px;"/>
+        <Label fx:id="naoSincLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: orange;"/>
+        <Separator orientation="VERTICAL"/>
+        <Label text="Nuvem:" style="-fx-font-size: 11px;"/>
+        <Label fx:id="totalNuvemLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: green;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="mensagemLabel" text="" style="-fx-text-fill: gray; -fx-font-size: 11px;"/>
+    </HBox>
+
+</VBox>

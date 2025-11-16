@@ -1,0 +1,22 @@
+# Build outputs
+/target/
+/out/
+/dist/
+
+# IDE / tooling
+/.idea/
+*.iml
+/.vscode/
+.DS_Store
+
+# Logs and temp
+*.log
+*.tmp
+*.swp
+
+# Local databases / runtime artifacts
+/leituras_buda.db
+/demografico_users.db
+
+# OS junk
+Thumbs.db
