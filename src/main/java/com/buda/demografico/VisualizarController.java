@@ -185,22 +185,22 @@ public class VisualizarController implements Initializable {
                     for (EntrevistadoDTO pessoa : entrevistados) {
                         if (pessoa.leituras.isEmpty()) {
                             writer.append(escaparCSV(pessoa.nome)).append(",");
-                            writer.append(String.valueOf(pessoa.idade)).append(",");
+                            writer.append(formatNullable(pessoa.idade)).append(",");
                             writer.append(escaparCSV(pessoa.sexo)).append(",");
                             writer.append(escaparCSV(pessoa.tradicao)).append(",");
                             writer.append(escaparCSV(pessoa.templo)).append(",");
-                            writer.append(String.valueOf(pessoa.tempo_pratica)).append(",");
+                            writer.append(formatNullable(pessoa.tempo_pratica)).append(",");
                             writer.append(",,,,,,");
                             writer.append(escaparCSV(pessoa.data_entrevista)).append("\n");
                             continue;
                         }
                         for (LeituraDTO l : pessoa.leituras) {
                             writer.append(escaparCSV(pessoa.nome)).append(",");
-                            writer.append(String.valueOf(pessoa.idade)).append(",");
+                            writer.append(formatNullable(pessoa.idade)).append(",");
                             writer.append(escaparCSV(pessoa.sexo)).append(",");
                             writer.append(escaparCSV(pessoa.tradicao)).append(",");
                             writer.append(escaparCSV(pessoa.templo)).append(",");
-                            writer.append(String.valueOf(pessoa.tempo_pratica)).append(",");
+                            writer.append(formatNullable(pessoa.tempo_pratica)).append(",");
                             writer.append(escaparCSV(l.tipo_leitura)).append(",");
                             writer.append(escaparCSV(l.titulo_obra)).append(",");
                             writer.append(escaparCSV(l.autor)).append(",");
@@ -474,8 +474,8 @@ public class VisualizarController implements Initializable {
             return;
         }
 
-        int idade;
-        int tempoPratica;
+        Integer idade;
+        Integer tempoPratica;
         try {
             idade = idadeTexto.isEmpty() ? null : Integer.parseInt(idadeTexto);
         } catch (NumberFormatException e) {
@@ -735,6 +735,10 @@ public class VisualizarController implements Initializable {
             return "\"" + escaped + "\"";
         }
         return escaped;
+    }
+
+    private String formatNullable(Object value) {
+        return value == null ? "" : String.valueOf(value);
     }
 
     private GridPane criarGridPadrao() {

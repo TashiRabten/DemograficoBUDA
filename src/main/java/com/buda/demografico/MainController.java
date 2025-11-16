@@ -195,11 +195,11 @@ public class MainController implements Initializable {
 
             EntrevistadoDTO entrevistado = new EntrevistadoDTO();
             entrevistado.nome = nomeField.getText().trim();
-            entrevistado.idade = Integer.parseInt(idadeField.getText().trim());
+            entrevistado.idade = parseInteger(idadeField.getText());
             entrevistado.sexo = sexoCombo.getValue();
             entrevistado.tradicao = tradicaoCombo.getValue();
             entrevistado.templo = temploField.getText().trim().isEmpty() ? null : temploField.getText().trim();
-            entrevistado.tempo_pratica = Integer.parseInt(tempoPraticaField.getText().trim());
+            entrevistado.tempo_pratica = parseInteger(tempoPraticaField.getText());
             entrevistado.usuario_coletor = usuarioColetor;
             entrevistado.data_entrevista = dataEntrevistaPicker.getValue() != null
                 ? dataEntrevistaPicker.getValue().toString()
@@ -478,6 +478,17 @@ public class MainController implements Initializable {
         cachedTradicao = null;
         cachedTemplo = null;
         cachedTempoPratica = null;
+    }
+
+    private Integer parseInteger(String text) throws NumberFormatException {
+        if (text == null) {
+            return null;
+        }
+        String trimmed = text.trim();
+        if (trimmed.isEmpty()) {
+            return null;
+        }
+        return Integer.parseInt(trimmed);
     }
 
     /**

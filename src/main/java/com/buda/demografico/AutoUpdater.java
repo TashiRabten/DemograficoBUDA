@@ -107,6 +107,10 @@ public final class AutoUpdater {
             .build();
 
         HttpResponse<String> response = HTTP.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 404) {
+            System.out.println("[AutoUpdater] Nenhuma release encontrada no repositório.");
+            return null;
+        }
         if (response.statusCode() != 200) {
             throw new IOException("GitHub API retornou HTTP " + response.statusCode());
         }

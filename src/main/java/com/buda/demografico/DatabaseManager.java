@@ -18,6 +18,7 @@ import java.util.Map;
 public class DatabaseManager {
     private static final Path STORAGE_DIR = Paths.get(System.getProperty("user.home"), "Documents", "DemograficoBUDA");
     private static final Path DB_PATH = STORAGE_DIR.resolve("leituras_buda.db");
+    private static final int SCHEMA_VERSION = 3;
     private Connection connection;
 
     public DatabaseManager() {
@@ -51,9 +52,15 @@ public class DatabaseManager {
                 stmt.execute("DROP TABLE IF EXISTS entrevistados");
                 criarNovasTabelas(stmt);
                 stmt.execute("PRAGMA user_version = 2");
-            } else {
-                criarNovasTabelas(stmt);
+                version = 2;
             }
+
+            if (version < SCHEMA_VERSION) {
+                migrarParaVersao3(stmt);
+                stmt.execute("PRAGMA user_version = " + SCHEMA_VERSION);
+            }
+
+            criarNovasTabelas(stmt);
         }
     }
 
@@ -77,11 +84,11 @@ public class DatabaseManager {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 cloud_id INTEGER,
                 nome TEXT NOT NULL,
-                idade INTEGER NOT NULL,
-                sexo TEXT NOT NULL,
-                tradicao TEXT NOT NULL,
+                idade INTEGER,
+                sexo TEXT,
+                tradicao TEXT,
                 templo TEXT,
-                tempo_pratica INTEGER NOT NULL,
+                tempo_pratica INTEGER,
                 usuario_coletor TEXT NOT NULL,
                 data_entrevista TEXT,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -109,6 +116,49 @@ public class DatabaseManager {
 
         stmt.execute(entrevistadosSql);
         stmt.execute(leiturasSql);
+    }
+
+    private void migrarParaVersao3(Statement stmt) throws SQLException {
+        if (!tabelaExiste("entrevistados")) {
+            criarNovasTabelas(stmt);
+            return;
+        }
+
+        stmt.execute("ALTER TABLE entrevistados RENAME TO entrevistados_old_v3");
+        String criarTabela = """
+            CREATE TABLE entrevistados (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                cloud_id INTEGER,
+                nome TEXT NOT NULL,
+                idade INTEGER,
+                sexo TEXT,
+                tradicao TEXT,
+                templo TEXT,
+                tempo_pratica INTEGER,
+                usuario_coletor TEXT NOT NULL,
+                data_entrevista TEXT,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT
+            );
+            """;
+        stmt.execute(criarTabela);
+        stmt.execute("""
+            INSERT INTO entrevistados (
+                id, cloud_id, nome, idade, sexo, tradicao, templo, tempo_pratica,
+                usuario_coletor, data_entrevista, created_at, updated_at
+            )
+            SELECT
+                id, cloud_id, nome, idade, sexo, tradicao, templo, tempo_pratica,
+                usuario_coletor, data_entrevista, created_at, updated_at
+            FROM entrevistados_old_v3
+            """);
+        stmt.execute("DROP TABLE entrevistados_old_v3");
+    }
+
+    private boolean tabelaExiste(String nome) throws SQLException {
+        try (ResultSet rs = connection.getMetaData().getTables(null, null, nome, null)) {
+            return rs.next();
+        }
     }
 
     /**
@@ -171,11 +221,11 @@ public class DatabaseManager {
                 dto.entrevistado_id = rs.getInt("entrevistado_id");
                 dto.entrevistado_cloud_id = rs.getObject("entrevistado_cloud_id") != null ? rs.getInt("entrevistado_cloud_id") : null;
                 dto.nome_entrevistado = rs.getString("nome");
-                dto.idade = rs.getInt("idade");
+                dto.idade = readNullableInt(rs, "idade");
                 dto.sexo = rs.getString("sexo");
                 dto.tradicao = rs.getString("tradicao");
                 dto.templo = rs.getString("templo");
-                dto.tempo_pratica = rs.getInt("tempo_pratica");
+                dto.tempo_pratica = readNullableInt(rs, "tempo_pratica");
                 dto.usuario_coletor = rs.getString("usuario_coletor");
                 dto.data_entrevista = rs.getString("data_entrevista");
                 dto.tipo_leitura = rs.getString("tipo_leitura");
@@ -219,11 +269,11 @@ public class DatabaseManager {
                 dto.entrevistado_id = rs.getInt("entrevistado_id");
                 dto.entrevistado_cloud_id = rs.getObject("entrevistado_cloud_id") != null ? rs.getInt("entrevistado_cloud_id") : null;
                 dto.nome_entrevistado = rs.getString("nome");
-                dto.idade = rs.getInt("idade");
+                dto.idade = readNullableInt(rs, "idade");
                 dto.sexo = rs.getString("sexo");
                 dto.tradicao = rs.getString("tradicao");
                 dto.templo = rs.getString("templo");
-                dto.tempo_pratica = rs.getInt("tempo_pratica");
+                dto.tempo_pratica = readNullableInt(rs, "tempo_pratica");
                 dto.usuario_coletor = rs.getString("usuario_coletor");
                 dto.data_entrevista = rs.getString("data_entrevista");
                 dto.tipo_leitura = rs.getString("tipo_leitura");
@@ -280,11 +330,11 @@ public class DatabaseManager {
                 }
                 pessoa.cloud_id = rs.getObject("e_cloud_id") != null ? rs.getInt("e_cloud_id") : null;
                 pessoa.nome = rs.getString("nome");
-                pessoa.idade = rs.getInt("idade");
+                pessoa.idade = readNullableInt(rs, "idade");
                 pessoa.sexo = rs.getString("sexo");
                 pessoa.tradicao = rs.getString("tradicao");
                 pessoa.templo = rs.getString("templo");
-                pessoa.tempo_pratica = rs.getInt("tempo_pratica");
+                pessoa.tempo_pratica = readNullableInt(rs, "tempo_pratica");
                 pessoa.usuario_coletor = rs.getString("usuario_coletor");
                 pessoa.data_entrevista = rs.getString("data_entrevista");
 
@@ -444,11 +494,11 @@ public class DatabaseManager {
             """;
         try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, dto.nome);
-            pstmt.setInt(2, dto.idade);
-            pstmt.setString(3, dto.sexo);
-            pstmt.setString(4, dto.tradicao);
-            pstmt.setString(5, dto.templo);
-            pstmt.setInt(6, dto.tempo_pratica != null ? dto.tempo_pratica : 0);
+            setNullableInt(pstmt, 2, dto.idade);
+            setNullableString(pstmt, 3, dto.sexo);
+            setNullableString(pstmt, 4, dto.tradicao);
+            setNullableString(pstmt, 5, dto.templo);
+            setNullableInt(pstmt, 6, dto.tempo_pratica);
             pstmt.setString(7, dto.usuario_coletor);
             pstmt.setString(8, dto.data_entrevista);
             pstmt.executeUpdate();
@@ -464,29 +514,32 @@ public class DatabaseManager {
     private EntrevistadoDTO buscarEntrevistadoPorChave(EntrevistadoDTO dto) throws SQLException {
         String sql = """
             SELECT * FROM entrevistados
-            WHERE nome = ? AND idade = ? AND sexo = ? AND tradicao = ?
-              AND IFNULL(templo,'') = IFNULL(?, '')
-              AND tempo_pratica = ?
+            WHERE nome = ?
+              AND IFNULL(idade, -1) = IFNULL(?, -1)
+              AND IFNULL(sexo, '') = IFNULL(?, '')
+              AND IFNULL(tradicao, '') = IFNULL(?, '')
+              AND IFNULL(templo, '') = IFNULL(?, '')
+              AND IFNULL(tempo_pratica, -1) = IFNULL(?, -1)
             LIMIT 1
             """;
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, dto.nome);
-            pstmt.setInt(2, dto.idade);
-            pstmt.setString(3, dto.sexo);
-            pstmt.setString(4, dto.tradicao);
-            pstmt.setString(5, dto.templo);
-            pstmt.setInt(6, dto.tempo_pratica != null ? dto.tempo_pratica : 0);
+            setNullableInt(pstmt, 2, dto.idade);
+            setNullableString(pstmt, 3, dto.sexo);
+            setNullableString(pstmt, 4, dto.tradicao);
+            setNullableString(pstmt, 5, dto.templo);
+            setNullableInt(pstmt, 6, dto.tempo_pratica);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     EntrevistadoDTO existente = new EntrevistadoDTO();
                     existente.id = rs.getInt("id");
                     existente.cloud_id = rs.getObject("cloud_id") != null ? rs.getInt("cloud_id") : null;
                     existente.nome = rs.getString("nome");
-                    existente.idade = rs.getInt("idade");
+                    existente.idade = readNullableInt(rs, "idade");
                     existente.sexo = rs.getString("sexo");
                     existente.tradicao = rs.getString("tradicao");
                     existente.templo = rs.getString("templo");
-                    existente.tempo_pratica = rs.getInt("tempo_pratica");
+                    existente.tempo_pratica = readNullableInt(rs, "tempo_pratica");
                     existente.usuario_coletor = rs.getString("usuario_coletor");
                     existente.data_entrevista = rs.getString("data_entrevista");
                     return existente;
@@ -506,11 +559,11 @@ public class DatabaseManager {
                     dto.id = rs.getInt("id");
                     dto.cloud_id = rs.getObject("cloud_id") != null ? rs.getInt("cloud_id") : null;
                     dto.nome = rs.getString("nome");
-                    dto.idade = rs.getInt("idade");
+                    dto.idade = readNullableInt(rs, "idade");
                     dto.sexo = rs.getString("sexo");
                     dto.tradicao = rs.getString("tradicao");
                     dto.templo = rs.getString("templo");
-                    dto.tempo_pratica = rs.getInt("tempo_pratica");
+                    dto.tempo_pratica = readNullableInt(rs, "tempo_pratica");
                     dto.usuario_coletor = rs.getString("usuario_coletor");
                     dto.data_entrevista = rs.getString("data_entrevista");
                     return dto;
@@ -529,11 +582,11 @@ public class DatabaseManager {
             """;
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, dto.nome);
-            pstmt.setInt(2, dto.idade);
-            pstmt.setString(3, dto.sexo);
-            pstmt.setString(4, dto.tradicao);
-            pstmt.setString(5, dto.templo);
-            pstmt.setInt(6, dto.tempo_pratica != null ? dto.tempo_pratica : 0);
+            setNullableInt(pstmt, 2, dto.idade);
+            setNullableString(pstmt, 3, dto.sexo);
+            setNullableString(pstmt, 4, dto.tradicao);
+            setNullableString(pstmt, 5, dto.templo);
+            setNullableInt(pstmt, 6, dto.tempo_pratica);
             pstmt.setString(7, dto.usuario_coletor);
             pstmt.setString(8, dto.data_entrevista);
             pstmt.setInt(9, dto.id);
@@ -574,11 +627,11 @@ public class DatabaseManager {
                     dto.entrevistado_id = rs.getInt("entrevistado_id");
                     dto.entrevistado_cloud_id = rs.getObject("entrevistado_cloud_id") != null ? rs.getInt("entrevistado_cloud_id") : null;
                     dto.nome_entrevistado = rs.getString("nome");
-                    dto.idade = rs.getInt("idade");
+                    dto.idade = readNullableInt(rs, "idade");
                     dto.sexo = rs.getString("sexo");
                     dto.tradicao = rs.getString("tradicao");
                     dto.templo = rs.getString("templo");
-                    dto.tempo_pratica = rs.getInt("tempo_pratica");
+                    dto.tempo_pratica = readNullableInt(rs, "tempo_pratica");
                     dto.usuario_coletor = rs.getString("usuario_coletor");
                     dto.data_entrevista = rs.getString("data_entrevista");
                     dto.tipo_leitura = rs.getString("tipo_leitura");
@@ -640,5 +693,26 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.err.println("[DatabaseManager] Erro ao fechar conexão: " + e.getMessage());
         }
+    }
+
+    private void setNullableInt(PreparedStatement pstmt, int index, Integer valor) throws SQLException {
+        if (valor == null) {
+            pstmt.setNull(index, Types.INTEGER);
+        } else {
+            pstmt.setInt(index, valor);
+        }
+    }
+
+    private void setNullableString(PreparedStatement pstmt, int index, String valor) throws SQLException {
+        if (valor == null || valor.trim().isEmpty()) {
+            pstmt.setNull(index, Types.VARCHAR);
+        } else {
+            pstmt.setString(index, valor.trim());
+        }
+    }
+
+    private Integer readNullableInt(ResultSet rs, String coluna) throws SQLException {
+        int valor = rs.getInt(coluna);
+        return rs.wasNull() ? null : valor;
     }
 }
