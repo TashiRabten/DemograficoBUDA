@@ -1,0 +1,141 @@
+name: Build DemograficoBUDA Installers
+
+# Windows .exe + macOS arm64 .pkg, published to THIS repo's Release on a v* tag.
+# Ported from build-windows-jpackage.bat / build-macos-jpackage.sh (JavaFX, shaded
+# JAR + jlink runtime). Untested in CI — run a workflow_dispatch first.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'App version (x.y.z)'
+        required: true
+        default: '1.1.0'
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+env:
+  APP_NAME: DemograficoBUDA
+  APP_VERSION: ${{ github.event.inputs.version || '1.1.0' }}
+  MAIN_CLASS: com.buda.demografico.DemograficoBUDAMain
+  JLINK_MODULES: java.base,java.desktop,java.sql,java.net.http,java.prefs,javafx.controls,javafx.fxml,javafx.graphics
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create DRAFT release (tag runs only)
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          NOTES="DemograficoBUDA $TAG — instaladores (Windows .exe + macOS arm64 .pkg)."
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "DemograficoBUDA $TAG" --notes "$NOTES" --draft
+          else
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes "$NOTES"
+          fi
+
+  windows:
+    needs: prepare-release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: liberica, java-version: '24', java-package: jdk+fx }
+      - name: Resolve version
+        shell: bash
+        run: |
+          V="${APP_VERSION}"; if [[ "${GITHUB_REF}" == refs/tags/* ]]; then V="${GITHUB_REF_NAME#v}"; V="${V#.}"; fi
+          echo "APP_VERSION=$V" >> "$GITHUB_ENV"
+      - name: Build shaded JAR + jlink runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mvn -B -DskipTests package
+          rm -rf runtime
+          "$JAVA_HOME/bin/jlink" --module-path "$JAVA_HOME/jmods" --add-modules "$JLINK_MODULES" --bind-services \
+            --output runtime --strip-debug --compress=zip-6 --no-header-files --no-man-pages
+          mkdir -p input && cp target/*-shaded.jar input/
+      - name: Install WiX 3
+        shell: pwsh
+        run: if (-not (Get-Command candle.exe -ErrorAction SilentlyContinue)) { choco install wixtoolset --no-progress -y }
+      - name: jpackage .exe
+        shell: bash
+        run: |
+          set -euo pipefail
+          JAR=$(ls input/*-shaded.jar | xargs -n1 basename)
+          ICON_ARG=(); [ -f src/main/resources/icons/pramana.ico ] && ICON_ARG=(--icon src/main/resources/icons/pramana.ico)
+          rm -rf out && mkdir -p out
+          "$JAVA_HOME/bin/jpackage" --type exe --name "$APP_NAME" --app-version "$APP_VERSION" --vendor "Tashi Rabten" \
+            --input input --main-jar "$JAR" --main-class "$MAIN_CLASS" --runtime-image runtime --dest out "${ICON_ARG[@]+"${ICON_ARG[@]}"}" \
+            --win-menu --win-dir-chooser --win-shortcut --win-per-user-install \
+            --java-options "--enable-native-access=javafx.graphics" --java-options "-Dprism.order=sw,j2d"
+          ls -la out
+      - name: Publish .exe to the release (tag runs)
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        shell: bash
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: gh release upload "${GITHUB_REF_NAME}" out/*.exe --repo "$GITHUB_REPOSITORY" --clobber
+      - name: Upload .exe artifact (test runs only)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        uses: actions/upload-artifact@v4
+        with: { name: DemograficoBUDA-Windows, path: out/*.exe, retention-days: 1 }
+
+  macos:
+    needs: prepare-release
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: liberica, java-version: '24', java-package: jdk+fx }
+      - name: Install Maven
+        run: brew install maven
+      - name: Resolve version
+        run: |
+          V="${APP_VERSION}"; if [[ "${GITHUB_REF}" == refs/tags/* ]]; then V="${GITHUB_REF_NAME#v}"; V="${V#.}"; fi
+          echo "APP_VERSION=$V" >> "$GITHUB_ENV"
+      - name: Build shaded JAR + jlink runtime
+        run: |
+          set -euo pipefail
+          mvn -B -DskipTests package
+          rm -rf runtime
+          "$JAVA_HOME/bin/jlink" --module-path "$JAVA_HOME/jmods" --add-modules "$JLINK_MODULES" --bind-services \
+            --output runtime --strip-debug --compress=zip-6 --no-header-files --no-man-pages
+          mkdir -p input && cp target/*-shaded.jar input/
+      - name: jpackage .pkg (arm64)
+        run: |
+          set -euo pipefail
+          JAR=$(ls input/*-shaded.jar | xargs -n1 basename)
+          ICON_ARG=(); [ -f src/main/resources/icons/pramana.icns ] && ICON_ARG=(--icon src/main/resources/icons/pramana.icns)
+          rm -rf out && mkdir -p out
+          "$JAVA_HOME/bin/jpackage" --type pkg --name "$APP_NAME" --app-version "$APP_VERSION" --vendor "Tashi Rabten" \
+            --input input --main-jar "$JAR" --main-class "$MAIN_CLASS" --runtime-image runtime --dest out "${ICON_ARG[@]+"${ICON_ARG[@]}"}" \
+            --java-options "--enable-native-access=javafx.graphics" --java-options "-Dprism.order=sw,j2d" \
+            --java-options "-Djava.awt.im.style=on-the-spot" --java-options "-Djavafx.embed.singleThread=true"
+          for f in out/*.pkg; do base="${f%.pkg}"; case "$base" in *-arm64) ;; *) mv "$f" "${base}-arm64.pkg" ;; esac; done
+          ls -la out
+      - name: Publish .pkg to the release (tag runs)
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: gh release upload "${GITHUB_REF_NAME}" out/*.pkg --repo "$GITHUB_REPOSITORY" --clobber
+      - name: Upload .pkg artifact (test runs only)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        uses: actions/upload-artifact@v4
+        with: { name: DemograficoBUDA-macOS, path: out/*.pkg, retention-days: 1 }
+
+  finalize-release:
+    needs: [windows, macos]
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Un-draft the release
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: |
+          set -euo pipefail
+          gh release edit "${GITHUB_REF_NAME}" --repo "$GITHUB_REPOSITORY" --draft=false --latest
+          echo "Published DemograficoBUDA ${GITHUB_REF_NAME}."
