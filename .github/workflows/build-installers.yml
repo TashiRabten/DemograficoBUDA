@@ -56,6 +56,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          printf 'app.version=%s\n' "$APP_VERSION" > src/main/resources/version.properties
           mvn -B -DskipTests package
           rm -rf runtime
           "$JAVA_HOME/bin/jlink" --module-path "$JAVA_HOME/jmods" --add-modules "$JLINK_MODULES" --bind-services \
@@ -74,6 +75,7 @@ jobs:
           "$JAVA_HOME/bin/jpackage" --type exe --name "$APP_NAME" --app-version "$APP_VERSION" --vendor "Tashi Rabten" \
             --input input --main-jar "$JAR" --main-class "$MAIN_CLASS" --runtime-image runtime --dest out "${ICON_ARG[@]+"${ICON_ARG[@]}"}" \
             --win-menu --win-dir-chooser --win-shortcut --win-per-user-install \
+            --win-upgrade-uuid "f3fd4c60-5b35-4b73-a3c7-3dfc4fd1e6dd" \
             --java-options "--enable-native-access=javafx.graphics" --java-options "-Dprism.order=sw,j2d"
           ls -la out
       - name: Publish .exe to the release (tag runs)
@@ -102,6 +104,7 @@ jobs:
       - name: Build shaded JAR + jlink runtime
         run: |
           set -euo pipefail
+          printf 'app.version=%s\n' "$APP_VERSION" > src/main/resources/version.properties
           mvn -B -DskipTests package
           rm -rf runtime
           "$JAVA_HOME/bin/jlink" --module-path "$JAVA_HOME/jmods" --add-modules "$JLINK_MODULES" --bind-services \
