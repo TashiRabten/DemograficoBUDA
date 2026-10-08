@@ -290,6 +290,10 @@ public class DatabaseManager {
     }
 
     public List<EntrevistadoDTO> buscarEntrevistadosComLeituras() throws SQLException {
+        return buscarEntrevistadosComLeituras(null);
+    }
+
+    public List<EntrevistadoDTO> buscarEntrevistadosComLeituras(String usuarioColetor) throws SQLException {
         String sql = """
             SELECT
                 e.id            AS e_id,
@@ -313,14 +317,29 @@ public class DatabaseManager {
                 l.created_at    AS l_created_at
             FROM entrevistados e
             LEFT JOIN leituras l ON l.entrevistado_id = e.id
+            """ + (usuarioColetor != null ? "WHERE e.usuario_coletor = ?\n" : "") + """
             ORDER BY e.created_at DESC, l.created_at DESC
             """;
 
         Map<Integer, EntrevistadoDTO> mapa = new LinkedHashMap<>();
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
 
-            while (rs.next()) {
+        if (usuarioColetor != null) {
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, usuarioColetor);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    return processarResultSetEntrevistados(rs, mapa);
+                }
+            }
+        } else {
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(sql)) {
+                return processarResultSetEntrevistados(rs, mapa);
+            }
+        }
+    }
+
+    private List<EntrevistadoDTO> processarResultSetEntrevistados(ResultSet rs, Map<Integer, EntrevistadoDTO> mapa) throws SQLException {
+        while (rs.next()) {
                 int entId = rs.getInt("e_id");
                 EntrevistadoDTO pessoa = mapa.get(entId);
                 if (pessoa == null) {
@@ -362,7 +381,6 @@ public class DatabaseManager {
                     leitura.data_entrevista = pessoa.data_entrevista;
                     pessoa.leituras.add(leitura);
                 }
-            }
         }
         return new ArrayList<>(mapa.values());
     }

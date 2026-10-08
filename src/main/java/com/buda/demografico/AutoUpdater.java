@@ -1,253 +1,525 @@
 package com.buda.demografico;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.Priority;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.awt.Desktop;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.util.Objects;
-import java.util.Optional;
+import java.net.URL;
+import java.nio.file.*;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
- * Responsável por checar atualizações publicadas nas releases do GitHub.
- * Inspirado no AutoUpdater do GlossarioBUDA, porém simplificado para o DemograficoBUDA.
+ * AutoUpdater for DemograficoBUDA
+ * Adapted from GlossarioBUDA AutoUpdater
  */
-public final class AutoUpdater {
+public class AutoUpdater {
+    private static boolean manualCheck = false;
+    private static final String CURRENT_VERSION = getCurrentVersion();
+    private static final String GITHUB_RELEASES_API = "https://api.github.com/repos/TashiRabten/DemograficoBUDA/releases/latest";
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    private static final String VERSION_FILE = "/version.properties";
-    private static final String VERSION_KEY = "app.version";
-    private static final String GITHUB_RELEASE_API = "https://api.github.com/repos/TashiRabten/DemograficoBUDA/releases/latest";
-    private static final HttpClient HTTP = HttpClient.newBuilder()
-        .connectTimeout(Duration.ofSeconds(10))
-        .build();
+    // Constants
+    private static final String VERSION_PROPERTIES_PATH = "/version.properties";
+    private static final String USER_HOME_PROPERTY = "user.home";
+    private static final String DOWNLOADS_FOLDER = "Downloads";
+    private static final String EXE_EXTENSION = ".exe";
+    private static final String DMG_EXTENSION = ".dmg";
+    private static final String PKG_EXTENSION = ".pkg";
 
-    private static final String CURRENT_VERSION = carregarVersaoLocal();
-
-    private AutoUpdater() {
+    public static void checkForUpdatesManually() {
+        System.out.println("🔧 Manual update check initiated");
+        manualCheck = true;
+        checkForUpdates();
     }
 
     public static void checkForUpdates() {
-        checkForUpdates(false);
-    }
+        System.out.println("🔢 Current version: " + CURRENT_VERSION);
 
-    public static void checkForUpdatesManually() {
-        checkForUpdates(true);
-    }
+        // Enable HTTP redirect following globally
+        HttpURLConnection.setFollowRedirects(true);
 
-    private static void checkForUpdates(boolean manual) {
-        Task<ReleaseInfo> task = new Task<>() {
+        Task<String> task = new Task<>() {
             @Override
-            protected ReleaseInfo call() throws Exception {
-                return buscarUltimaRelease();
+            protected String call() throws Exception {
+                System.out.println("🌐 Connecting to GitHub API: " + GITHUB_RELEASES_API);
+                HttpURLConnection conn = (HttpURLConnection) new URL(GITHUB_RELEASES_API).openConnection();
+                conn.setRequestProperty("Accept", "application/vnd.github+json");
+                conn.setInstanceFollowRedirects(true);
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(15000);
+
+                int responseCode = conn.getResponseCode();
+                System.out.println("📡 GitHub API response code: " + responseCode);
+                if (responseCode != 200)
+                    throw new IOException("HTTP " + responseCode);
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = in.readLine()) != null) sb.append(line);
+                in.close();
+
+                System.out.println("📦 GitHub API response received");
+                return sb.toString();
             }
         };
 
-        task.setOnSucceeded(evt -> {
-            ReleaseInfo info = task.getValue();
-            if (info == null) {
-                if (manual) {
-                    Platform.runLater(() -> mostrarAlerta("Aplicativo atualizado",
-                        "Você já está utilizando a versão mais recente.",
-                        null, null));
-                }
-                return;
+        task.setOnSucceeded(e -> {
+            System.out.println("✅ Task succeeded, processing result...");
+            String jsonResponse = task.getValue();
+            if (jsonResponse != null && !jsonResponse.isEmpty()) {
+                processUpdateResponse(jsonResponse);
             }
-
-            if (isNovaVersao(info.version(), CURRENT_VERSION)) {
-                Platform.runLater(() -> mostrarDialogoAtualizacao(info));
-            } else if (manual) {
-                Platform.runLater(() -> mostrarAlerta("Aplicativo atualizado",
-                    "Você já está utilizando a versão mais recente.",
-                    info.releaseUrl(), null));
-            }
+            manualCheck = false;
         });
 
-        task.setOnFailed(evt -> {
-            if (manual) {
-                Throwable ex = task.getException();
-                Platform.runLater(() -> mostrarAlerta("Falha ao verificar atualização",
-                    ex != null ? ex.getMessage() : "Erro desconhecido",
-                    null, null));
+        task.setOnFailed(e -> {
+            Throwable ex = task.getException();
+            System.err.println("❌ Update check task failed: " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
+            ex.printStackTrace();
+            if (manualCheck) {
+                Platform.runLater(() -> UIUtils.showError(
+                        "❌ Connection to Update Failed: " + ex.getMessage(),
+                        "❌ Conexão de Atualização Falhou: " + ex.getMessage()
+                ));
             } else {
-                System.err.println("[AutoUpdater] Falha ao consultar atualizações: " + evt.getSource().getException());
+                System.err.println("⚠️ Auto-update check failed: " + ex.getMessage());
             }
+            manualCheck = false;
         });
 
-        Thread thread = new Thread(task, "auto-update-checker");
-        thread.setDaemon(true);
-        thread.start();
+        executor.submit(task);
     }
 
-    private static ReleaseInfo buscarUltimaRelease() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(GITHUB_RELEASE_API))
-            .header("Accept", "application/vnd.github+json")
-            .header("User-Agent", "DemograficoBUDA-Updater")
-            .timeout(Duration.ofSeconds(15))
-            .GET()
-            .build();
-
-        HttpResponse<String> response = HTTP.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() == 404) {
-            System.out.println("[AutoUpdater] Nenhuma release encontrada no repositório.");
-            return null;
-        }
-        if (response.statusCode() != 200) {
-            throw new IOException("GitHub API retornou HTTP " + response.statusCode());
-        }
-
-        JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
-        String tagName = extrairTexto(json, "tag_name");
-        String releaseUrl = extrairTexto(json, "html_url");
-        String notes = extrairTexto(json, "body");
-        String assetUrl = extrairPrimeiroAsset(json);
-
-        if (tagName == null || tagName.isBlank()) {
-            return null;
-        }
-        return new ReleaseInfo(tagName.trim(), releaseUrl, assetUrl, notes);
-    }
-
-    private static String extrairTexto(JsonObject json, String key) {
-        JsonElement element = json.get(key);
-        if (element == null || element.isJsonNull()) {
-            return null;
-        }
-        return element.getAsString();
-    }
-
-    private static String extrairPrimeiroAsset(JsonObject json) {
-        JsonArray assets = json.getAsJsonArray("assets");
-        if (assets == null || assets.isEmpty()) {
-            return null;
-        }
-        JsonObject asset = assets.get(0).getAsJsonObject();
-        return extrairTexto(asset, "browser_download_url");
-    }
-
-    private static void mostrarDialogoAtualizacao(ReleaseInfo info) {
-        String titulo = "Nova versão disponível";
-        String mensagem = String.format("Uma nova versão (%s) está disponível. Você está usando %s.",
-            info.version(), CURRENT_VERSION);
-        mostrarAlerta(titulo, mensagem, info.releaseUrl(), info.notes());
-    }
-
-    private static void mostrarAlerta(String titulo, String mensagem, String link, String notas) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Atualizações do DemograficoBUDA");
-        alert.setHeaderText(titulo);
-
-        VBox content = new VBox(10);
-        content.setPadding(new Insets(10));
-
-        TextArea body = new TextArea(mensagem + (notas != null && !notas.isBlank() ? "\n\nNotas da versão:\n" + notas : ""));
-        body.setEditable(false);
-        body.setWrapText(true);
-        body.setPrefRowCount(10);
-        VBox.setVgrow(body, Priority.ALWAYS);
-        content.getChildren().add(body);
-
-        if (link != null && !link.isBlank()) {
-            Hyperlink hyperlink = new Hyperlink("Abrir página da release");
-            hyperlink.setOnAction(e -> abrirLink(link));
-            content.getChildren().add(hyperlink);
-        }
-
-        alert.getDialogPane().setContent(content);
-
-        if (link != null) {
-            ButtonType abrirBtn = new ButtonType("Abrir no navegador");
-            alert.getButtonTypes().add(abrirBtn);
-            Button abrir = (Button) alert.getDialogPane().lookupButton(abrirBtn);
-            if (abrir != null) {
-                abrir.setOnAction(e -> abrirLink(link));
-            }
-        }
-
-        alert.show();
-    }
-
-    private static void abrirLink(String url) {
-        if (url == null || url.isBlank()) {
-            return;
-        }
+    private static void processUpdateResponse(String jsonResponse) {
         try {
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse(URI.create(url));
+            String latestVersion = extractVersionFromResponse(jsonResponse);
+            String downloadUrl = extractDownloadUrlFromResponse(jsonResponse);
+            String releaseUrl = extractReleaseUrlFromResponse(jsonResponse);
+            String releaseNotes = extractReleaseNotesFromResponse(jsonResponse);
+
+            if (latestVersion != null && isNewerVersion(latestVersion, CURRENT_VERSION)) {
+                System.out.println("✅ Update available: " + latestVersion + " > " + CURRENT_VERSION);
+                Platform.runLater(() -> showUpdateDialog(latestVersion, downloadUrl, releaseUrl, releaseNotes));
+            } else {
+                System.out.println("ℹ️ No update needed: " + CURRENT_VERSION + " >= " + latestVersion);
+                if (manualCheck) {
+                    Platform.runLater(() -> UIUtils.showInfo("✔ App is up-to-date", "✔ Aplicativo está atualizado"));
+                }
             }
         } catch (Exception e) {
-            System.err.println("[AutoUpdater] Não foi possível abrir o link: " + e.getMessage());
-        }
-    }
-
-    private static boolean isNovaVersao(String remota, String local) {
-        if (remota == null || local == null) {
-            return false;
-        }
-        String cleanRemote = normalizarSemVer(remota);
-        String cleanLocal = normalizarSemVer(local);
-
-        String[] remoteParts = cleanRemote.split("\\.");
-        String[] localParts = cleanLocal.split("\\.");
-        int max = Math.max(remoteParts.length, localParts.length);
-        for (int i = 0; i < max; i++) {
-            int remoteVal = i < remoteParts.length ? parseInt(remoteParts[i]) : 0;
-            int localVal = i < localParts.length ? parseInt(localParts[i]) : 0;
-            if (remoteVal != localVal) {
-                return remoteVal > localVal;
+            System.err.println("❌ Failed to process update response: " + e.getMessage());
+            if (manualCheck) {
+                Platform.runLater(() -> UIUtils.showError("❌ Failed to parse update information", "❌ Falha ao analisar informações de atualização"));
             }
         }
-        return false;
     }
 
-    private static int parseInt(String value) {
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            return 0;
+    private static void showUpdateDialog(String latestVersion, String downloadUrl, String releaseUrl, String releaseNotes) {
+        System.out.println("🚀 Showing update dialog...");
+        
+        if (latestVersion == null || latestVersion.isEmpty()) {
+            System.err.println("❌ No version information found");
+            return;
+        }
+
+        if (downloadUrl == null) {
+            System.err.println("❌ No installer URL found in release assets");
+            UIUtils.showError(
+                    "❌ No installer found for your platform",
+                    "❌ Nenhum instalador encontrado para sua plataforma"
+            );
+            return;
+        }
+
+        Stage stage = createUpdateDialogStage();
+        VBox root = createDialogContent(latestVersion, releaseUrl, releaseNotes, downloadUrl, stage);
+        
+        stage.setScene(new Scene(root, 500, 450));
+        stage.show();
+    }
+
+    private static Stage createUpdateDialogStage() {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle("Update Available / Atualização Disponível");
+        return stage;
+    }
+
+    private static VBox createDialogContent(String latestVersion, String releaseUrl, String releaseNotes, String downloadUrl, Stage stage) {
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(20));
+        root.setAlignment(Pos.CENTER);
+
+        Label title = new Label(String.format("🔄 A new version (%s) is available!\n🔄 Uma nova versão (%s) está disponível!", latestVersion, latestVersion));
+        title.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+
+        TextArea notes = createNotesArea(releaseNotes != null ? releaseNotes : "No release notes available / Notas de lançamento não disponíveis");
+        
+        Hyperlink releaseLink = createReleaseLink(releaseUrl);
+        
+        ProgressBar bar = new ProgressBar(0);
+        bar.setVisible(false);
+        bar.setPrefWidth(450);
+        Label progress = new Label("");
+        progress.setVisible(false);
+
+        HBox buttons = createButtons(downloadUrl, bar, progress, stage);
+        
+        root.getChildren().addAll(title, notes, releaseLink, bar, progress, buttons);
+        return root;
+    }
+
+    private static Hyperlink createReleaseLink(String releaseUrl) {
+        Hyperlink releaseLink = new Hyperlink("🔗 View Release Notes / Ver Notas de Lançamento");
+        releaseLink.setOnAction(e -> {
+            try {
+                Desktop.getDesktop().browse(URI.create(releaseUrl));
+            } catch (IOException ex) {
+                UIUtils.showError("❌ Failed to open browser", "❌ Falha ao abrir navegador");
+            }
+        });
+        return releaseLink;
+    }
+
+    private static TextArea createNotesArea(String releaseNotes) {
+        TextArea notes = new TextArea(releaseNotes);
+        notes.setEditable(false);
+        notes.setWrapText(true);
+        notes.setPrefHeight(200);
+        return notes;
+    }
+
+    private static HBox createButtons(String downloadUrl, ProgressBar bar, Label progress, Stage stage) {
+        Button download = UIStyleManager.createStyledButton("💾 Download & Install / Baixar e Instalar", UIStyleManager.ButtonType.PROCESS);
+        Button cancel = UIStyleManager.createStyledButton("❌ Cancel / Cancelar", UIStyleManager.ButtonType.CANCEL);
+
+        HBox buttons = new HBox(10, download, cancel);
+        buttons.setAlignment(Pos.CENTER);
+
+        download.setOnAction(e -> handleDownloadAction(downloadUrl, bar, progress, download, stage));
+        cancel.setOnAction(e -> stage.close());
+        
+        return buttons;
+    }
+
+    private static void handleDownloadAction(String downloadUrl, ProgressBar bar, Label progress, Button download, Stage stage) {
+        bar.setVisible(true);
+        progress.setVisible(true);
+        download.setDisable(true);
+
+        Task<Void> installTask = createInstallTask(downloadUrl);
+        
+        bar.progressProperty().bind(installTask.progressProperty());
+        progress.textProperty().bind(installTask.messageProperty());
+
+        installTask.setOnSucceeded(ev -> stage.close());
+        installTask.setOnFailed(ev -> {
+            Throwable ex = installTask.getException();
+            progress.textProperty().unbind();
+            progress.setText("❌ Error: " + ex.getMessage() + "\n❌ Erro: " + ex.getMessage());
+            download.setDisable(false);
+        });
+
+        executor.submit(installTask);
+    }
+
+    private static Task<Void> createInstallTask(String downloadUrl) {
+        return new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                updateMessage("⬇ Downloading installer...\n⬇ Baixando instalador...");
+                Path userDownloads = downloadInstaller(downloadUrl);
+                Path cleanupScript = createCleanupScript();
+                executeCleanupScript(cleanupScript);
+                launchInstaller(userDownloads, cleanupScript, this::updateMessage);
+                return null;
+            }
+        };
+    }
+
+    private static Path downloadInstaller(String url) throws Exception {
+        Path tempDir = Files.createTempDirectory("demografico-update");
+        String fileName = url.substring(url.lastIndexOf('/') + 1);
+        
+        // Extract filename from query parameters if present (for proxy URLs)
+        if (url.contains("filename=")) {
+            int filenameIndex = url.indexOf("filename=");
+            int ampersandIndex = url.indexOf("&", filenameIndex);
+            if (ampersandIndex == -1) {
+                fileName = java.net.URLDecoder.decode(url.substring(filenameIndex + 9), "UTF-8");
+            } else {
+                fileName = java.net.URLDecoder.decode(url.substring(filenameIndex + 9, ampersandIndex), "UTF-8");
+            }
+        }
+        Path tempOutput = tempDir.resolve(fileName);
+
+        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        conn.setInstanceFollowRedirects(true);
+        conn.setConnectTimeout(30000);
+        conn.setReadTimeout(60000);
+
+        try (InputStream in = conn.getInputStream()) {
+            Files.copy(in, tempOutput, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        Path userDownloads = Paths.get(System.getProperty(USER_HOME_PROPERTY), DOWNLOADS_FOLDER, fileName);
+        Files.copy(tempOutput, userDownloads, StandardCopyOption.REPLACE_EXISTING);
+        Files.deleteIfExists(tempOutput);
+
+        return userDownloads;
+    }
+
+    private static Path createCleanupScript() throws Exception {
+        Path tempDir = Files.createTempDirectory("demografico-update");
+        boolean isWindows = isWindowsOS();
+        Path cleanupScript = tempDir.resolve("cleanup" + (isWindows ? ".bat" : ".sh"));
+        
+        String scriptContent = isWindows ? createWindowsCleanupScript(cleanupScript) : createUnixCleanupScript();
+        Files.writeString(cleanupScript, scriptContent);
+        
+        if (!isWindows) {
+            cleanupScript.toFile().setExecutable(true);
+        }
+        
+        return cleanupScript;
+    }
+
+    private static String createWindowsCleanupScript(Path cleanupScript) {
+        return "@echo off\n" +
+               "timeout /t 5 /nobreak > nul 2>&1\n" +
+               "start /min cmd /c \"timeout /t 2 /nobreak > nul 2>&1 & del \\\"" +
+               cleanupScript.toString() + "\\\"\"\n";
+    }
+
+    private static String createUnixCleanupScript() {
+        return "#!/bin/bash\n" +
+               "sleep 5\n" +
+               "(sleep 2; rm \"$0\") &\n";
+    }
+
+    private static void executeCleanupScript(Path cleanupScript) throws Exception {
+        if (isWindowsOS()) {
+            Runtime.getRuntime().exec(new String[]{"cmd", "/c", "start", "/min", "/b", cleanupScript.toString()});
+        } else {
+            Runtime.getRuntime().exec(cleanupScript.toString());
         }
     }
 
-    private static String normalizarSemVer(String value) {
-        return value.replaceFirst("^[vV]", "").trim();
+    private static void launchInstaller(Path userDownloads, Path cleanupScript, MessageUpdater messageUpdater) throws Exception {
+        messageUpdater.updateMessage("🚀 Opening installer...\n🚀 Abrindo instalador...");
+        try {
+            Desktop.getDesktop().open(userDownloads.toFile());
+            executeCleanupInBackground(cleanupScript);
+            messageUpdater.updateMessage("🚀 Installer launched...\n🚀 Instalador lançado...");
+            Thread.sleep(1500);
+            Platform.exit();
+            System.exit(0);
+        } catch (Exception ex) {
+            messageUpdater.updateMessage("❌ Could not open installer\n❌ Não foi possível abrir o instalador");
+            tryOpenFileExplorer(userDownloads);
+        }
     }
 
-    private static String carregarVersaoLocal() {
-        try (InputStream in = AutoUpdater.class.getResourceAsStream(VERSION_FILE)) {
+    @FunctionalInterface
+    private interface MessageUpdater {
+        void updateMessage(String message);
+    }
+
+    private static void executeCleanupInBackground(Path cleanupScript) throws Exception {
+        if (isWindowsOS()) {
+            Runtime.getRuntime().exec("cmd /c start " + cleanupScript.toString());
+        } else {
+            Runtime.getRuntime().exec(cleanupScript.toString());
+        }
+    }
+
+    private static void tryOpenFileExplorer(Path userDownloads) {
+        try {
+            Runtime.getRuntime().exec(new String[]{"open", "-R", userDownloads.toString()});
+        } catch (Exception explorerEx) {
+            // Failed to open file explorer, continue silently
+        }
+    }
+
+    private static boolean isWindowsOS() {
+        return System.getProperty("os.name").toLowerCase().contains("win");
+    }
+
+    private static String extractVersionFromResponse(String jsonResponse) {
+        try {
+            int tagIndex = jsonResponse.indexOf("\"tag_name\":");
+            if (tagIndex == -1) return null;
+            
+            int startQuote = jsonResponse.indexOf("\"", tagIndex + 11);
+            int endQuote = jsonResponse.indexOf("\"", startQuote + 1);
+            
+            if (startQuote == -1 || endQuote == -1) return null;
+            
+            String tagName = jsonResponse.substring(startQuote + 1, endQuote);
+            // Normalize: v.1.0.0 or v1.0.0 -> 1.0.0
+            return tagName.replaceFirst("^[vV]\\.?", "").trim();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static String extractDownloadUrlFromResponse(String jsonResponse) {
+        try {
+            boolean isMac = System.getProperty("os.name").toLowerCase().contains("mac");
+            boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+
+            System.out.println("🖥️ Platform: " + (isWindows ? "Windows" : isMac ? "macOS" : "Other"));
+
+            int assetsIndex = jsonResponse.indexOf("\"assets\":");
+            if (assetsIndex == -1) {
+                System.err.println("❌ No 'assets' field found in JSON");
+                return null;
+            }
+
+            String assetsSection = jsonResponse.substring(assetsIndex);
+            int assetsEnd = assetsSection.indexOf("]");
+            if (assetsEnd == -1) {
+                System.err.println("❌ No closing bracket for assets array");
+                return null;
+            }
+
+            String assets = assetsSection.substring(0, assetsEnd);
+            String searchExtension = isWindows ? EXE_EXTENSION : isMac ? PKG_EXTENSION : EXE_EXTENSION;
+            System.out.println("🔎 Searching for extension: " + searchExtension);
+
+            int nameIndex = assets.indexOf("\"name\":");
+            
+            while (nameIndex != -1) {
+                int nameStart = assets.indexOf("\"", nameIndex + 7);
+                int nameEnd = assets.indexOf("\"", nameStart + 1);
+
+                if (nameStart != -1 && nameEnd != -1) {
+                    String fileName = assets.substring(nameStart + 1, nameEnd);
+                    System.out.println("🔍 Found asset: " + fileName);
+
+                    if (fileName.toLowerCase().endsWith(searchExtension)) {
+                        int urlIndex = assets.indexOf("\"browser_download_url\":", nameEnd);
+                        if (urlIndex != -1) {
+                            int urlStart = assets.indexOf("\"", urlIndex + 23);
+                            int urlEnd = assets.indexOf("\"", urlStart + 1);
+                            if (urlStart != -1 && urlEnd != -1) {
+                                String url = assets.substring(urlStart + 1, urlEnd);
+                                System.out.println("✅ Found installer URL: " + url);
+                                return url;
+                            }
+                        }
+                    }
+                }
+
+                nameIndex = assets.indexOf("\"name\":", nameEnd);
+            }
+            
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static String extractReleaseUrlFromResponse(String jsonResponse) {
+        try {
+            int htmlUrlIndex = jsonResponse.indexOf("\"html_url\":");
+            if (htmlUrlIndex == -1) return "https://github.com/TashiRabten/DemograficoBUDA/releases";
+            
+            int startQuote = jsonResponse.indexOf("\"", htmlUrlIndex + 11);
+            int endQuote = jsonResponse.indexOf("\"", startQuote + 1);
+            
+            if (startQuote == -1 || endQuote == -1) return "https://github.com/TashiRabten/DemograficoBUDA/releases";
+            
+            return jsonResponse.substring(startQuote + 1, endQuote);
+        } catch (Exception e) {
+            return "https://github.com/TashiRabten/DemograficoBUDA/releases";
+        }
+    }
+
+    private static String extractReleaseNotesFromResponse(String jsonResponse) {
+        try {
+            int bodyIndex = jsonResponse.indexOf("\"body\":");
+            if (bodyIndex == -1) return "No release notes available";
+
+            int startQuote = jsonResponse.indexOf("\"", bodyIndex + 7);
+            int endQuote = jsonResponse.indexOf("\"", startQuote + 1);
+
+            while (endQuote != -1 && jsonResponse.charAt(endQuote - 1) == '\\') {
+                endQuote = jsonResponse.indexOf("\"", endQuote + 1);
+            }
+
+            if (startQuote == -1 || endQuote == -1) return "No release notes available";
+
+            String notes = jsonResponse.substring(startQuote + 1, endQuote)
+                .replace("\\n", "\n")
+                .replace("\\r", "")
+                .replace("\r", "")
+                .replace("\\\"", "\"")
+                .replace("\\t", "    ");
+
+            notes = notes.replaceAll("(?m)^[*-]\\s+", "• ");
+            notes = notes.replaceAll("(?m)^\\s+[*-]\\s+", "  • ");
+
+            return notes;
+        } catch (Exception e) {
+            return "No release notes available";
+        }
+    }
+
+    private static String getCurrentVersion() {
+        try (InputStream in = AutoUpdater.class.getResourceAsStream(VERSION_PROPERTIES_PATH)) {
             if (in == null) {
+                System.err.println("❌ version.properties not found in resources.");
                 return "0.0.0";
             }
             Properties props = new Properties();
             props.load(in);
-            return Optional.ofNullable(props.getProperty(VERSION_KEY))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .orElse("0.0.0");
+            return props.getProperty("app.version", "0.0.0").trim();
         } catch (IOException e) {
-            System.err.println("[AutoUpdater] Não foi possível ler a versão local: " + e.getMessage());
+            System.err.println("❌ Could not load version from properties: " + e.getMessage());
             return "0.0.0";
         }
     }
 
-    private record ReleaseInfo(String version, String releaseUrl, String downloadUrl, String notes) {
+    private static boolean isNewerVersion(String latest, String current) {
+        if (latest == null || latest.isBlank() || current == null || current.isBlank()) {
+            System.err.println("⚠️ Version string is blank.");
+            return false;
+        }
+
+        String[] lv = latest.split("\\.");
+        String[] cv = current.split("\\.");
+
+        try {
+            for (int i = 0; i < Math.max(lv.length, cv.length); i++) {
+                int l = i < lv.length ? Integer.parseInt(lv[i].trim()) : 0;
+                int c = i < cv.length ? Integer.parseInt(cv[i].trim()) : 0;
+                if (l > c) return true;
+                if (l < c) return false;
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("🚫 Invalid version format: " + latest + " or " + current);
+            return false;
+        }
+
+        return false;
+    }
+
+    public static void shutdown() {
+        executor.shutdown();
     }
 }

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual do Usuário - DemograficoBUDA</title>
+    <style>
+        body {
+            font-family: Calibri, Arial, sans-serif;
+            color: #2f2f2f;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 25px;
+            background: #ffffff;
+        }
+        h1 {
+            color: #1c4c72;
+            border-bottom: 3px solid #1c4c72;
+            padding-bottom: 8px;
+            margin-top: 30px;
+        }
+        h2 {
+            color: #1f6ba5;
+            margin-top: 32px;
+            border-left: 5px solid #1f6ba5;
+            padding-left: 12px;
+        }
+        h3 {
+            color: #2e7db5;
+            margin-top: 24px;
+        }
+        p { text-align: justify; }
+        .toc {
+            background: #f5faff;
+            border-radius: 6px;
+            padding: 18px;
+            margin: 25px 0;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .toc a { color: #1f6ba5; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .box {
+            padding: 14px;
+            border-left: 4px solid;
+            border-radius: 4px;
+            margin: 18px 0;
+        }
+        .dica { border-color: #2e8b57; background: #eef8f2; }
+        .aviso { border-color: #d9534f; background: #ffeceb; }
+        a.voltar {
+            color: #1f6ba5;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        a.voltar:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Manual do Usuário — DemograficoBUDA</h1>
+    <p>
+        Bem-vindo ao DemograficoBUDA. Este guia ajuda qualquer pessoa a registrar entrevistas,
+        consultar os dados e sincronizar as informações com a nuvem. Nada aqui exige conhecimentos técnicos:
+        basta seguir as telas e observar as dicas abaixo.
+    </p>
+
+    <div class="toc" id="indice">
+        <h2>Índice</h2>
+        <ul>
+            <li><a href="#login">1. Acesso e login</a></li>
+            <li><a href="#coleta">2. Registrar entrevistas</a></li>
+            <li><a href="#visualizacao">3. Visualizar e editar pessoas</a></li>
+            <li><a href="#exportar">4. Exportar e compartilhar</a></li>
+            <li><a href="#sincronizar">5. Sincronizar com a nuvem</a></li>
+            <li><a href="#atalhos">6. Dicas rápidas e atalhos</a></li>
+            <li><a href="#ajuda">7. Perguntas frequentes</a></li>
+        </ul>
+    </div>
+
+    <h2 id="login">1. Acesso e login -> <a href="#indice">Índice</a></h2>
+    <p>
+        Ao abrir o DemograficoBUDA aparece uma tela simples de login. Informe apenas seu nome de usuário
+        (algo como <em>maria\_coletora</em>). Não há senha e os dados ficam registrados localmente,
+        permitindo saber quem coletou cada entrevista.
+    </p>
+    <ul>
+        <li><strong>Registrar usuário</strong>: cria ou atualiza seu nome.</li>
+        <li><strong>Entrar</strong>: carrega o painel principal.</li>
+        <li><strong>Sair</strong>: limpa o usuário atual (útil para troca de operador).</li>
+    </ul>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <h2 id="coleta">2. Registrar entrevistas -> <a href="#indice">Índice</a></h2>
+    <p>
+        A tela principal está dividida em três blocos: status, dados do entrevistado e hábitos de leitura.
+        Os campos se comportam da seguinte forma:
+    </p>
+    <ul>
+        <li><strong>Nome</strong>: único campo obrigatório na seção demográfica. Idade, sexo, tradição,
+            templo e tempo de prática podem ficar em branco.</li>
+        <li><strong>Tipo de leitura</strong>: obrigatório. Os demais campos da leitura são opcionais.</li>
+        <li><strong>Data da entrevista</strong>: pode ser preenchida no cabeçalho; se vazia, fica registrada
+            como “sem data”.</li>
+    </ul>
+    <p>
+        Após preencher o que for necessário clique em
+        <strong>Salvar leitura</strong>. A mensagem no rodapé confirma se o registro ficou apenas local
+        ou se também foi enviado à nuvem.
+    </p>
+    <div class="box dica">
+        <strong>Dica:</strong> Use os botões “Limpar Leitura” para manter os dados da pessoa e registrar várias obras
+        em sequência, ou “Limpar Tudo” para começar uma nova entrevista.
+    </div>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <h2 id="visualizacao">3. Visualizar e editar pessoas -> <a href="#indice">Índice</a></h2>
+    <p>
+        O botão <strong>Visualizar Dados</strong> abre a lista de entrevistados. Cada linha representa uma pessoa
+        e mostra um resumo das obras cadastradas.
+    </p>
+    <h3>Principais ações</h3>
+    <ul>
+        <li><strong>Filtros por data</strong>: selecione uma data inicial/final para reduzir a lista.</li>
+        <li><strong>Visualizar / Editar</strong>: abre um painel com as informações da pessoa e um menu
+            suspenso para escolher qual obra editar.</li>
+        <li><strong>Excluir Pessoa</strong>: remove tudo daquela pessoa, local e na nuvem.</li>
+        <li><strong>Exportar CSV</strong>: gera uma planilha com todas as leituras visíveis.</li>
+    </ul>
+    <div class="box dica">
+        <strong>No painel de edição:</strong> escolha a obra no dropdown, altere os campos desejados e clique “Salvar
+        alterações”. É possível excluir apenas a obra selecionada usando o botão “Excluir leitura”.
+    </div>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <h2 id="exportar">4. Exportar e compartilhar -> <a href="#indice">Índice</a></h2>
+    <p>
+        Use o botão <strong>Exportar CSV</strong> na tela de visualização para gerar um arquivo compatível com Excel,
+        Google Sheets ou outras ferramentas. Campos em branco aparecem como células vazias.
+    </p>
+    <ul>
+        <li>Escolha a pasta e o nome do arquivo ao exportar.</li>
+        <li>Se não houver registros filtrados, o sistema avisa que não há nada para salvar.</li>
+    </ul>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <h2 id="sincronizar">5. Sincronizar com a nuvem -> <a href="#indice">Índice</a></h2>
+    <p>
+        Clique em <strong>Sincronizar</strong> na tela principal para enviar entrevistas ainda não sincronizadas
+        para o Supabase. Algumas dicas:
+    </p>
+    <ul>
+        <li>Certifique-se de que a conexão está ativa (botão “Testar Conexão”).</li>
+        <li>Se o Supabase tiver restrições de unicidade antigas, o sistema tenta reaproveitar registros,
+            mas o ideal é remover o índice exclusivo em <code>leituras</code> e permitir campos nulos em
+            <code>entrevistados</code>.</li>
+        <li>Após concluir, os contadores de “Locais”, “Não Sincronizadas” e “Nuvem” são atualizados.</li>
+    </ul>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <h2 id="atalhos">6. Dicas rápidas e atalhos -> <a href="#indice">Índice</a></h2>
+    <ul>
+        <li><strong>Botões responsivos</strong>: os botões crescem conforme o texto, evitando cortes.</li>
+        <li><strong>Seleção discreta</strong>: ao escolher uma linha na tabela, apenas um contorno cinza aparece
+            (sem preencher com azul).</li>
+        <li><strong>AutoUpdater</strong>: ao abrir, o sistema verifica se há nova versão. Caso não exista release
+            pública, ignora o aviso.</li>
+        <li><strong>Scripts de instalação</strong>: use <em>build-windows-jpackage.bat</em> e
+            <em>build-macos-jpackage.sh</em> para gerar instaladores que podem ser distribuídos para outras máquinas.</li>
+    </ul>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <h2 id="ajuda">7. Perguntas frequentes -> <a href="#indice">Índice</a></h2>
+    <h3>Posso deixar campos em branco?</h3>
+    <p>Sim. Apenas “Nome” (no cadastro da pessoa) e “Tipo de leitura” são obrigatórios.</p>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <h3>Como descubro se algo ficou na nuvem?</h3>
+    <p>
+        O rodapé mostra quantas leituras estão pendentes. Ao sincronizar, uma mensagem indica quantas entrevistas
+        foram enviadas.
+    </p>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <h3>O que fazer se o Supabase recusar registros duplicados?</h3>
+    <p>
+        Remova o índice exclusivo <code>ux_leituras_por_obra</code> ou mantenha-o apenas se as leituras realmente
+        não puderem se repetir. O sistema tenta atualizar registros existentes, mas o cenário ideal é permitir
+        múltiplas obras semelhantes por pessoa.
+    </p>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <h3>Onde ficam os arquivos locais?</h3>
+    <p>No Windows, procure em <code>C:\Users\SEU_USUARIO\Documents\DemograficoBUDA\</code>. Lá estão os bancos SQLite
+        (<code>leituras_buda.db</code> e <code>demografico_users.db</code>).</p>
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <p><a class="voltar" href="#indice">Voltar ao índice</a></p>
+
+    <p style="text-align:center; margin-top:40px; color:#666;">
+        Associação BUDA &mdash; Projeto DemograficoBUDA · Manual do Usuário
+    </p>
+</body>
+</html>

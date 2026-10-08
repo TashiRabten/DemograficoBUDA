@@ -80,8 +80,15 @@ public class VisualizarController implements Initializable {
 
     private DatabaseManager dbManager;
     private SupabaseClient supabaseClient;
+    private AuthManager authManager;
     private ObservableList<EntrevistadoDTO> entrevistados;
     private List<EntrevistadoDTO> todosEntrevistados;
+
+    public void setAuthManager(AuthManager authManager) {
+        this.authManager = authManager;
+        // Recarregar dados após setar o AuthManager
+        carregarTodosOsDados();
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -104,7 +111,7 @@ public class VisualizarController implements Initializable {
         entrevistadosTable.setItems(entrevistados);
         configurarFiltros();
         configurarIconesBotoes();
-        carregarTodosOsDados();
+        // Dados serão carregados quando setAuthManager() for chamado
     }
 
     @FXML
@@ -616,7 +623,12 @@ public class VisualizarController implements Initializable {
         mostrarMensagem("Carregando registros...", false);
         new Thread(() -> {
             try {
-                List<EntrevistadoDTO> dados = dbManager.buscarEntrevistadosComLeituras();
+                // Filtrar apenas dados do usuário logado
+                String usuarioAtual = authManager.getUsuarioAtual() != null
+                    ? authManager.getUsuarioAtual().getNomeUsuario()
+                    : null;
+
+                List<EntrevistadoDTO> dados = dbManager.buscarEntrevistadosComLeituras(usuarioAtual);
                 Platform.runLater(() -> {
                     todosEntrevistados.clear();
                     todosEntrevistados.addAll(dados);

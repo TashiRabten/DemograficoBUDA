@@ -147,11 +147,51 @@ public class MainController implements Initializable {
         configurarIconesBotoes();
     }
 
+    /**
+     * Verifica conexão com retry automático (até 3 tentativas)
+     */
+    private boolean verificarConexaoComRetry() {
+        System.out.println("[MainController] Verificando conexão...");
+        int tentativas = 0;
+        int maxTentativas = 3;
+
+        while (tentativas < maxTentativas) {
+            tentativas++;
+            System.out.println("[MainController] Tentativa " + tentativas + "/" + maxTentativas);
+
+            if (supabaseClient.testConnection()) {
+                System.out.println("[MainController] ✅ Conexão estabelecida!");
+                return true;
+            }
+
+            if (tentativas < maxTentativas) {
+                try {
+                    // Aguardar antes de tentar novamente (1s, 2s)
+                    Thread.sleep(tentativas * 1000L);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }
+
+        System.out.println("[MainController] ❌ Falha na conexão após " + maxTentativas + " tentativas");
+        return false;
+    }
+
     private void testarConexaoInicial() {
         new Thread(() -> {
-            boolean conectado = supabaseClient.testConnection();
+            System.out.println("[MainController] Testando conexão inicial...");
+            boolean conectado = verificarConexaoComRetry();
+
             Platform.runLater(() -> {
                 atualizarStatusConexao(conectado ? "Conectado" : "Offline", conectado);
+                if (conectado) {
+                    System.out.println("[MainController] ✅ Conexão estabelecida!");
+                    atualizarEstatisticas(); // Recarregar estatísticas com dados da nuvem
+                } else {
+                    System.out.println("[MainController] ⚠️ Modo offline - dados serão salvos localmente");
+                }
             });
         }).start();
     }
@@ -338,6 +378,10 @@ public class MainController implements Initializable {
             );
             Scene scene = new Scene(loader.load());
 
+            // Passar AuthManager para o controller
+            VisualizarController controller = loader.getController();
+            controller.setAuthManager(authManager);
+
             Stage stage = new Stage();
             stage.setTitle("DemograficoBUDA - Visualizar Dados");
             stage.setScene(scene);
@@ -353,17 +397,24 @@ public class MainController implements Initializable {
     @FXML
     private void onSincronizar() {
         sincronizarButton.setDisable(true);
-        mostrarMensagem("Sincronizando...", false);
+        mostrarMensagem("Verificando conexão...", false);
 
         new Thread(() -> {
             try {
-                if (!supabaseClient.testConnection()) {
+                // Verificar conexão com retry automático
+                if (!verificarConexaoComRetry()) {
                     Platform.runLater(() -> {
-                        mostrarMensagem("❌ Sem conexão com a internet!", true);
+                        mostrarMensagem("❌ Sem conexão com a internet! Tente novamente mais tarde.", true);
                         sincronizarButton.setDisable(false);
+                        atualizarStatusConexao("Offline", false);
                     });
                     return;
                 }
+
+                Platform.runLater(() -> {
+                    atualizarStatusConexao("Conectado", true);
+                    mostrarMensagem("Sincronizando...", false);
+                });
 
                 List<LeituraDTO> naoSincronizadas = dbManager.buscarLeiturasNaoSincronizadas();
 

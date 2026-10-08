@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual do Usuário - GlossarioBUDA</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2.5cm;
+        }
+        
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        h1 {
+            color: #8B0000;
+            border-bottom: 3px solid #8B0000;
+            padding-bottom: 10px;
+            font-size: 28px;
+            margin-top: 30px;
+        }
+        
+        h2 {
+            color: #C41E3A;
+            font-size: 22px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-left: 5px solid #C41E3A;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #4169E1;
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        h4 {
+            color: #2E8B57;
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .version {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .subtitle {
+            color: #444;
+            font-style: italic;
+            font-size: 16px;
+        }
+        
+        p {
+            margin: 10px 0;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #8B0000;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .note {
+            background-color: #FFF8DC;
+            border-left: 5px solid #FFD700;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .warning {
+            background-color: #FFE4E1;
+            border-left: 5px solid #DC143C;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .tip {
+            background-color: #E0F7FA;
+            border-left: 5px solid #00ACC1;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #8B0000;
+            color: #666;
+            font-style: italic;
+        }
+        
+        strong {
+            color: #8B0000;
+        }
+        
+        .toc {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 30px 0;
+        }
+        
+        .toc h2 {
+            margin-top: 0;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        
+        .toc li {
+            margin: 8px 0;
+        }
+        
+        .toc a {
+            color: #4169E1;
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            h1, h2 {
+                page-break-after: avoid;
+            }
+            
+            table, pre, .note, .warning, .tip {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Manual do Usuário<br>GlossarioBUDA</h1>
+        <p class="version"><strong>Versão 1.1.3</strong></p>
+        <p class="subtitle">Sistema de Terminologia Budista com Suporte Multi-idioma</p>
+    </div>
+
+    <div class="toc">
+        <h2 id="indice"> 0. Índice</h2>
+        <ul>
+            <li><a href="#introducao">1. Introdução</a></li>
+            <li><a href="#instalacao">2. Instalação</a></li>
+            <li><a href="#interface">3. Interface Principal</a></li>
+            <li><a href="#busca">4. Busca de Termos</a></li>
+            <li><a href="#adicionar">5. Adicionar Novos Termos</a></li>
+            <li><a href="#editar">6. Editar Termos Existentes</a></li>
+            <li><a href="#deletar">7. Deletar Termos</a></li>
+            <li><a href="#vista-compacta">8. Vista Compacta</a></li>
+            <li><a href="#entrada-tibetano">9. Entrada de Texto Tibetano</a></li>
+            <li><a href="#diacriticos">10. Ferramenta de Diacríticos</a></li>
+            <li><a href="#importacao">11. Importação de glossários </a></li>
+            <li><a href="#exportacao">12. Exportação para WhatsApp</a></li>
+            <li><a href="#status">13. Status de Verificação</a></li>
+            <li><a href="#atualizacoes">14. Atualizações Automáticas</a></li>
+            <li><a href="#sincronizacao">15. Sincronização com a Nuvem</a></li>
+            <li><a href="#authorization">16. Autorização do Aplicativo (Windows / macOS / Antivírus)</a></li>
+            <li><a href="#dicas">17. Dicas e Atalhos</a></li>
+            <li><a href="#problemas">18. Solução de Problemas</a></li>
+        </ul>
+    </div>
+
+    <h2 id="introducao">1. Introdução ->  <a href="#indice"> Índice</a></h2>
+    <p>O <strong>GlossarioBUDA</strong> é um aplicativo de gestão de terminologia budista que permite:</p>
+    <ul>
+        <li>📚 Gerenciar termos em <strong>múltiplos idiomas</strong> (Tibetano, Sânscrito, Pali, Inglês, Português, Chinês, etc...)</li>
+        <li>🔍 Buscar termos com <strong>suporte a diacríticos</strong> (śamatha = samatha)</li>
+        <li>📱 Exportar termos formatados para <strong>WhatsApp</strong></li>
+        <li>🪟 <strong>Vista compacta</strong> sempre visível com ferramenta de diacríticos</li>
+        <li>📦 Importar glossários no formato <strong>XML, CSV e JSON</strong></li>
+        <li>✓ Sistema de <strong>verificação de status</strong> (rascunho, revisado, verificado, aprovado)</li>
+        <li>🔄 <strong>Sincronização com a nuvem</strong> para backup e compartilhamento</li>
+    </ul>
+
+    <h2 id="instalacao">2. Instalação -> <a href="#indice"> Índice</a></h2>
+    
+    <h3>Windows</h3>
+    <ol>
+        <li>Baixe o arquivo <code>GlossarioBUDA-x.x.x.exe</code> do site</li>
+        <li>Execute o instalador</li>
+        <li>Siga o assistente de instalação</li>
+        <li>O aplicativo será instalado em <code>C:\Program Files\GlossarioBUDA</code></li>
+        <li>Um atalho será criado na área de trabalho</li>
+    </ol>
+
+    <h3>macOS</h3>
+    <ol>
+        <li>Baixe o arquivo <code>GlossarioBUDA-x.x.x.pkg</code> do site</li>
+        <li>Abra o arquivo .pkg</li>
+        <li>Siga o assistente de instalação</li>
+        <li>O aplicativo será instalado em <code>/Applications</code></li>
+    </ol>
+
+    <h3><strong>CASO HAJA PROTEÇÃO do <a href="#authorization">WINDOWS ou MAC</a></strong></h3> 
+    
+    <h3>Primeiro Lançamento</h3>
+    <p>Na primeira execução, o aplicativo:</p>
+    <ul>
+        <li>Criará automaticamente o banco de dados <code>terms.db</code></li>
+        <li>Verificará por atualizações disponíveis</li>
+        <li>Estará pronto para uso imediato</li>
+    </ul>
+
+    <h2 id="interface">3. Interface Principal -> <a href="#indice"> Índice</a></h2>
+    <p>A janela principal é dividida em três seções:</p>
+
+    <h3>Barra Superior</h3>
+    <ul>
+        <li><strong>Campo de Busca</strong>: Digite termos para buscar</li>
+        <li><strong>Botão བོད་</strong>: Abre entrada de teclado tibetano para uso no Windows</li>
+        <li><strong>Botão Limpar</strong> 🗑️: Limpa a busca e resultados</li>
+    </ul>
+
+    <h3>Área de Resultados (Esquerda)</h3>
+    <ul>
+        <li>Lista de termos encontrados no formato: <code>termo_original → tradução</code></li>
+        <li>Clique em um termo para ver detalhes completos</li>
+        <li>Scroll para navegar pelos resultados</li>
+        <li><strong>Botão "Carregar mais"</strong>: Carrega próximos 100 resultados (aparece quando há mais de 100)</li>
+    </ul>
+
+    <h3>Painel de Detalhes (Direita)</h3>
+    <p>Mostra informações completas do termo selecionado:</p>
+    <ul>
+        <li>🔤 <strong>Termo Original</strong> e idioma</li>
+        <li>📝 <strong>Tradução</strong> e idioma de destino</li>
+        <li>📖 <strong>Contexto/Definição</strong> (se disponível)</li>
+        <li>👤 <strong>Contribuidor</strong> (quem adicionou)</li>
+        <li>📅 <strong>Data de Adição</strong></li>
+        <li>✓ <strong>Status de Verificação</strong></li>
+        <li>📌 <strong>Notas</strong> (se disponíveis)</li>
+    </ul>
+
+    <h3>Botões de Ação</h3>
+    <ul>
+        <li><strong>➕ Adicionar</strong>: Criar novo termo</li>
+        <li><strong>✏️ Editar</strong>: Editar termo selecionado</li>
+        <li><strong>🗑️ Deletar</strong>: Remover termo selecionado</li>
+        <li><strong>📤 Exportar</strong>: Exportar termos para WhatsApp</li>
+        <li><strong>🕒 Recentes</strong>: Ver 50 termos mais recentes</li>
+        <li><strong>📥 Carregar Dados</strong>: Importar glossário</li>
+        <li><strong>🔄 Sincronizar</strong>: Sincronizar com a nuvem</li>
+        <li><strong>🪟 Vista Compacta</strong>: Abrir janela compacta sempre visível</li>
+    </ul>
+
+    <h2 id="busca">4. Busca de Termos -> <a href="#indice"> Índice</a></h2>
+
+    <h3>Busca Básica</h3>
+    <ol>
+        <li>Digite qualquer texto no campo de busca</li>
+        <li>Os resultados aparecem automaticamente enquanto você digita</li>
+        <li>A busca funciona para:
+            <ul>
+                <li>Termo original</li>
+                <li>Tradução</li>
+                <li>Contexto</li>
+                <li>Contribuidor</li>
+                <li>Notas</li>
+                <li><strong>Aceita termos de uma única letra</strong> (ex: "I" em inglês)</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>Busca com Diacríticos</h3>
+    <p>A busca é <strong>insensível a diacríticos</strong>. Você pode buscar de três formas:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Digite</th>
+                <th>Encontra</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>samatha</code></td>
+                <td>śamatha, samatha, sāmatha</td>
+            </tr>
+            <tr>
+                <td><code>śamatha</code></td>
+                <td>śamatha, samatha, sāmatha</td>
+            </tr>
+            <tr>
+                <td><code>sāmatha</code></td>
+                <td>śamatha, samatha, sāmatha</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Busca Tibetana no Windows</h3>
+    <ol>
+        <li>Clique no botão <strong>བོད་</strong> ao lado do campo de busca</li>
+        <li>Clique "OK" para transferir para o campo de busca</li>
+        <li>Os resultados aparecem automaticamente</li>
+    </ol>
+
+    <h3>Paginação</h3>
+    <ul>
+        <li>A busca mostra <strong>100 resultados por página</strong></li>
+        <li>Se houver mais resultados, o botão <strong>"Carregar mais"</strong> aparece na parte inferior</li>
+        <li>Clique para carregar os próximos 100 resultados</li>
+        <li>Os novos resultados são adicionados à lista existente</li>
+    </ul>
+
+    <h3>Ver Termos Recentes</h3>
+    <ol>
+        <li>Clique no botão <strong>🕒 Recentes</strong></li>
+        <li>Mostra os <strong>50 termos mais recentemente adicionados</strong></li>
+        <li>Útil para revisar suas últimas entradas</li>
+    </ol>
+
+    <h2 id="adicionar">5. Adicionar Novos Termos -> <a href="#indice"> Índice</a></h2>
+
+    <h3>Passo a Passo</h3>
+    <ol>
+        <li>Clique no botão <strong>➕ Adicionar</strong> na barra superior</li>
+        <li>Uma nova janela se abre (você pode manter aberta)</li>
+        <li>Preencha os campos</li>
+    </ol>
+
+    <h4>Campos Obrigatórios</h4>
+    <ul>
+        <li><strong>Termo Original</strong>: O termo na língua de origem</li>
+        <li><strong>Idioma Original</strong>: Selecione da lista suspensa</li>
+        <li><strong>Tradução</strong>: O termo traduzido</li>
+        <li><strong>Idioma Tradução</strong>: Selecione da lista suspensa</li>
+    </ul>
+
+    <h4>Campos Opcionais</h4>
+    <ul>
+        <li><strong>Contexto/Definição</strong>: Explicação ou fonte do termo</li>
+        <li><strong>Contribuidor</strong>: Seu nome ou identificação</li>
+        <li><strong>Notas</strong>: Informações adicionais</li>
+    </ul>
+
+    <div class="note">
+        <strong>OBS:</strong> É possível manter a janela da versão compacta aberta para ter acesso à ferramenta de diacríticos
+    </div>
+
+    <h3>Idiomas Disponíveis</h3>
+    
+    <h4>Idioma Original:</h4>
+    <ul>
+        <li>English (Inglês)</li>
+        <li>Sanskrit (Sânscrito)</li>
+        <li>Pali (Páli)</li>
+        <li>Tibetan (Tibetano)</li>
+        <li>Chinese (Chinês)</li>
+        <li>Portuguese (Português)</li>
+    </ul>
+
+    <h4>Idioma Tradução:</h4>
+    <ul>
+        <li>Tibetan (Tibetano)</li>
+        <li>Portuguese (Português)</li>
+        <li>English (Inglês)</li>
+        <li>Sanskrit (Sânscrito)</li>
+        <li>Pali (Páli)</li>
+        <li>Chinese (Chinês)</li>
+    </ul>
+
+    <h3>Adicionar Idiomas Personalizados</h3>
+    <ol>
+        <li>Preencha o dropdown com o nome do idioma</li>
+        <li>O idioma é adicionado permanentemente às opções</li>
+    </ol>
+
+    <h3>Entrada de Texto Tibetano No Windows</h3>
+    <p>Cada campo de texto possui um botão <strong>བོད་</strong> azul ao lado:</p>
+    <ol>
+        <li>Clique no botão <strong>བོད་</strong> ao lado do campo desejado</li>
+        <li>Uma janela de entrada de texto tibetano abre</li>
+        <li>Digite o termo em tibetano</li>
+        <li>O texto tibetano aparece em tempo real</li>
+        <li>Clique "OK" para transferir o texto para o campo</li>
+    </ol>
+
+    <h3>Salvar o Termo</h3>
+    <ol>
+        <li>Revise todas as informações</li>
+        <li>Clique em <strong>"Adicionar"</strong> (botão verde)</li>
+        <li>A janela fecha e o termo é salvo</li>
+        <li>O status mostra: "Termo adicionado com sucesso!"</li>
+        <li>A busca é automaticamente atualizada</li>
+    </ol>
+
+    <h3>Cancelar</h3>
+    <p>Clique em <strong>"Cancelar"</strong> (botão vermelho) para fechar sem salvar</p>
+
+    <h2 id="editar">6. Editar Termos Existentes -> <a href="#indice"> Índice</a></h2>
+
+    <h3>Selecionar Termo</h3>
+    <ol>
+        <li>Busque o termo desejado</li>
+        <li>Clique no termo na lista de resultados (esquerda)</li>
+        <li>O termo fica destacado e os detalhes aparecem à direita</li>
+    </ol>
+
+    <h3>Abrir Editor</h3>
+    <p><strong>Método 1 - Botão:</strong></p>
+    <ol>
+        <li>Com o termo selecionado, clique no botão <strong>✏️ Editar</strong></li>
+    </ol>
+
+    <p><strong>Método 2 - Menu de Contexto:</strong></p>
+    <ol>
+        <li>Clique com o <strong>botão direito</strong> no termo na lista</li>
+        <li>Selecione "Editar Termo" no menu</li>
+    </ol>
+        <p><strong>Método 3 - Clicar duas vezes:</strong></p>
+    <ol>
+        <li>Clique duas vezes com o <strong>botão esquerdo no termo da lista</strong> no termo na lista</li>
+    </ol>
+
+    <h3>Editar Campos</h3>
+    <ol>
+        <li>A janela de edição abre com todos os campos preenchidos</li>
+        <li>Modifique os campos desejados</li>
+        <li>Todos os campos podem ser editados, incluindo idiomas</li>
+        <li>Use os botões <strong>བོད་</strong> para editar texto tibetano</li>
+    </ol>
+
+    <h3>Campo Adicional: Status</h3>
+    <p>Na edição, você tem acesso ao campo <strong>Status</strong>:</p>
+    <ul>
+        <li><strong>draft</strong> (rascunho): Termo em construção</li>
+        <li><strong>reviewed</strong> (revisado): Termo revisado uma vez</li>
+        <li><strong>verified</strong> (verificado): Termo verificado por especialista</li>
+        <li><strong>approved</strong> (aprovado): Termo oficialmente aprovado</li>
+    </ul>
+
+    <h3>Salvar Alterações</h3>
+    <ol>
+        <li>Revise as modificações</li>
+        <li>Clique em <strong>"Salvar"</strong> (botão verde)</li>
+        <li>O termo é atualizado no banco de dados</li>
+        <li>Status mostra: "Termo atualizado com sucesso!"</li>
+        <li>A lista de resultados é atualizada</li>
+    </ol>
+
+    <h3>Cancelar Edição</h3>
+    <p>Clique em <strong>"Cancelar"</strong> (botão vermelho) para fechar sem salvar</p>
+
+    <h2 id="deletar">7. Deletar Termos -> <a href="#indice"> Índice</a></h2>
+
+    <h3>Excluir um Termo</h3>
+    <p><strong>Método 1 - Botão:</strong></p>
+    <ol>
+        <li>Selecione o termo na lista</li>
+        <li>Clique no botão <strong>🗑️ Deletar</strong></li>
+    </ol>
+
+    <p><strong>Método 2 - Menu de Contexto:</strong></p>
+    <ol>
+        <li>Clique com o <strong>botão direito</strong> no termo</li>
+        <li>Selecione "Deletar Termo"</li>
+    </ol>
+        <p><strong>Método 3 - Botão de Deletar:</strong></p>
+    <ol>
+        <li>Selecione uma ou mais entradas e aperte o botão de deletar</li>
+    </ol>
+
+    <h3>Confirmação</h3>
+    <ol>
+        <li>Uma janela de confirmação aparece</li>
+        <li>Mostra: "Deletar termo? Tem certeza que deseja deletar o termo '[nome]'?"</li>
+        <li>Clique <strong>OK</strong> para confirmar a exclusão</li>
+        <li>Clique <strong>Cancelar</strong> para abortar</li>
+    </ol>
+
+    <h2 id="vista-compacta">8. Vista Compacta -> <a href="#indice"> Índice</a></h2>
+    <p>A <strong>Vista Compacta</strong> é uma janela pequena sempre visível que pode ficar sobre outros aplicativos.</p>
+
+    <h3>Abrir Vista Compacta</h3>
+    <ol>
+        <li>Clique no botão <strong>🪟 Vista Compacta</strong> na janela principal</li>
+        <li>Uma nova janela pequena aparece</li>
+        <li>A janela fica <strong>sempre no topo</strong> de outras aplicações</li>
+    </ol>
+
+    <h3>Funcionalidades</h3>
+
+    <h4>Editar </h4>
+    <ul>
+        <li> É possível editar termos com clique duplo</li>
+    </ul>
+
+    <h4>Busca Rápida</h4>
+    <ul>
+        <li>Campo de busca no topo</li>
+        <li>Botão <strong>བོད་</strong> para entrada tibetana</li>
+        <li>Resultados aparecem abaixo</li>
+    </ul>
+
+    <h4>Ações Rápidas</h4>
+    <ul>
+        <li><strong>➕ Adicionar</strong>: Criar novo termo</li>
+    </ul>
+
+    <h4>Ferramenta de Diacríticos</h4>
+    <ul>
+        <li>Selecione entre Skt e Ch</li>
+        <li>Coloque a letra no campo direito</li>
+        <li>Painel inferior com caracteres especiais</li>
+        <li><strong>Clique</strong> em qualquer caractere para copiar</li>
+        <li>Use em qualquer campo de texto da janela principal</li>
+    </ul>
+
+    <div class="tip">
+        <strong>Caracteres disponíveis:</strong><br>
+        Sânscrito/Pali: ā ī ū ṛ ṝ ḷ ḹ ṃ ḥ ṅ ñ ṭ ḍ ṇ ś ṣ, etc...<br>
+        Chinês: ā á ǎ à, etc...
+    </div>
+
+    <h2 id="entrada-tibetano">9. Entrada de Texto Tibetano -> <a href="#indice"> Índice</a></h2>
+    
+    <div class="warning">
+        <strong>⚠️ Importante para usuários Windows:</strong> A entrada de caracteres tibetanos com subscripts (usando Alt/Option + tecla) não funciona diretamente nos campos de texto do JavaFX no Windows. Use sempre o botão <strong>བོད་</strong> para entrada de texto tibetano.
+    </div>
+
+    <h3>No macOS</h3>
+    <p>Usuários de macOS podem digitar tibetano diretamente nos campos usando o teclado tibetano do sistema:</p>
+    <ul>
+        <li>Configure o teclado tibetano nas Preferências do Sistema</li>
+        <li>Use <strong>;</strong> (ponto e vírgula) para criar subscripts</li>
+        <li>Exemplo: ག + ; + ཡ = གྱ</li>
+    </ul>
+    
+    <p>Ou</p>
+    <ul>
+        <li>Use <strong>controle</strong> para criar subscripts</li>
+        <li>Exemplo: ག + controle + ཡ = གྱ</li>
+    </ul>
+
+    <h3>No Windows</h3>
+    <p>Usuários de Windows devem usar o <strong>Tibetan Input Helper</strong>:</p>
+    <ol>
+        <li>Clique no botão <strong>བོད་</strong> azul ao lado de qualquer campo</li>
+        <li>Digite usando transliteração Wylie</li>
+        <li>O texto tibetano aparece automaticamente</li>
+        <li>Clique "OK" para transferir o texto</li>
+    </ol>
+
+    <h2 id="diacriticos">10. Ferramenta de Diacríticos  -> <a href="#indice"> Índice</a></h2>
+    <p>A ferramenta de diacríticos está disponível na <strong>Vista Compacta</strong> e permite copiar caracteres especiais com um clique.</p>
+
+    <h3>Como Usar</h3>
+    <ol>
+        <li>Abra a Vista Compacta (<strong>🪟 Vista Compacta</strong>)</li>
+        <li>Na seção "Diacríticos", selecione o tipo:
+            <ul>
+                <li><strong>Skt</strong> - Sânscrito/Pali</li>
+                <li><strong>Ch</strong> - Chinês (Pinyin)</li>
+            </ul>
+        </li>
+        <li>Digite a letra base no campo (ex: <code>a</code>, <code>s</code>, <code>n</code>)</li>
+        <li>Os caracteres disponíveis aparecem abaixo</li>
+        <li>Clique no caractere desejado para copiar para a área de transferência</li>
+        <li>Cole onde necessário usando <strong>Ctrl+V</strong> (Windows) ou <strong>Cmd+V</strong> (macOS)</li>
+    </ol>
+
+    <h3>Caracteres Sânscritos/Pali Disponíveis</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Letra Base</th>
+                <th>Variações Disponíveis</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>a</td>
+                <td>ā</td>
+            </tr>
+            <tr>
+                <td>i</td>
+                <td>ī</td>
+            </tr>
+            <tr>
+                <td>u</td>
+                <td>ū</td>
+            </tr>
+            <tr>
+                <td>r</td>
+                <td>ṛ ṝ</td>
+            </tr>
+            <tr>
+                <td>l</td>
+                <td>ḷ ḹ</td>
+            </tr>
+            <tr>
+                <td>m</td>
+                <td>ṃ</td>
+            </tr>
+            <tr>
+                <td>h</td>
+                <td>ḥ</td>
+            </tr>
+            <tr>
+                <td>n</td>
+                <td>ṅ ñ ṇ</td>
+            </tr>
+            <tr>
+                <td>t</td>
+                <td>ṭ</td>
+            </tr>
+            <tr>
+                <td>d</td>
+                <td>ḍ</td>
+            </tr>
+            <tr>
+                <td>s</td>
+                <td>ś ṣ</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Caracteres Chineses (Pinyin) Disponíveis</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Letra Base</th>
+                <th>Tons Disponíveis</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>a</td>
+                <td>ā á ǎ à</td>
+            </tr>
+            <tr>
+                <td>e</td>
+                <td>ē é ě è</td>
+            </tr>
+            <tr>
+                <td>i</td>
+                <td>ī í ǐ ì</td>
+            </tr>
+            <tr>
+                <td>o</td>
+                <td>ō ó ǒ ò</td>
+            </tr>
+            <tr>
+                <td>u</td>
+                <td>ū ú ǔ ù</td>
+            </tr>
+            <tr>
+                <td>ü</td>
+                <td>ǖ ǘ ǚ ǜ</td>
+            </tr>
+        </tbody>
+    </table>
+
+  <h2 id="importacao">11. Importação de glossarios -> <a href="#indice"> Índice</a></h2>
+    
+  <h3>Gerar Arquivos Compatíveis (XML / CSV / JSON) com a IA</h3>
+  
+  <p>O <strong>GlossarioBUDA</strong> utiliza uma base de dados SQLite (<code>terms.db</code>) gerenciada pelo componente <code>DatabaseManager</code>. Você pode importar ou gerar arquivos compatíveis para integração, backup ou migração usando os formatos <strong>CSV</strong>, <strong>JSON</strong> ou <strong>XML</strong>.</p>
+
+  <h3>🧩 Estrutura esperada</h3>
+  <table>
+    <thead>
+      <tr><th>Campo</th><th>Descrição</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>source_term</code></td><td>Termo original</td></tr>
+      <tr><td><code>source_language</code></td><td>Idioma de origem (ex: sa, bo, en, pt)</td></tr>
+      <tr><td><code>target_term</code></td><td>Tradução ou termo-alvo</td></tr>
+      <tr><td><code>target_language</code></td><td>Idioma da tradução</td></tr>
+      <tr><td><code>context</code></td><td>Contexto opcional ou nota de uso</td></tr>
+      <tr><td><code>contributor</code></td><td>Nome de quem adicionou o termo</td></tr>
+      <tr><td><code>notes</code></td><td>Observações adicionais</td></tr>
+    </tbody>
+  </table>
+
+  <h3>📄 Exemplo de CSV</h3>
+  <pre><code>source_term,source_language,target_term,target_language,context,contributor,notes
+karma,sa,action,en,"philosophical term","Tashi","root concept"
+śūnyatā,sa,emptiness,en,"Buddhist philosophy","Tashi","key Mahayana term"</code></pre>
+
+  <h3>🧾 Exemplo de JSON</h3>
+  <pre><code>[
+  {
+    "source_term": "karma",
+    "source_language": "sa",
+    "target_term": "action",
+    "target_language": "en",
+    "context": "philosophical term",
+    "contributor": "Tashi",
+    "notes": "root concept"
+  },
+  {
+    "source_term": "śūnyatā",
+    "source_language": "sa",
+    "target_term": "emptiness",
+    "target_language": "en",
+    "context": "Buddhist philosophy",
+    "contributor": "Tashi",
+    "notes": "key Mahayana term"
+  }
+]</code></pre>
+
+  <h3>🧠 Exemplo de XML</h3>
+  <pre><code>&lt;terms&gt;
+  &lt;term&gt;
+    &lt;source_term&gt;karma&lt;/source_term&gt;
+    &lt;source_language&gt;sa&lt;/source_language&gt;
+    &lt;target_term&gt;action&lt;/target_term&gt;
+    &lt;target_language&gt;en&lt;/target_language&gt;
+    &lt;context&gt;philosophical term&lt;/context&gt;
+    &lt;contributor&gt;Tashi&lt;/contributor&gt;
+    &lt;notes&gt;root concept&lt;/notes&gt;
+  &lt;/term&gt;
+  &lt;term&gt;
+    &lt;source_term&gt;śūnyatā&lt;/source_term&gt;
+    &lt;source_language&gt;sa&lt;/source_language&gt;
+    &lt;target_term&gt;emptiness&lt;/target_term&gt;
+    &lt;target_language&gt;en&lt;/target_language&gt;
+    &lt;context&gt;Buddhist philosophy&lt;/context&gt;
+    &lt;contributor&gt;Tashi&lt;/contributor&gt;
+    &lt;notes&gt;key Mahayana term&lt;/notes&gt;
+  &lt;/term&gt;
+&lt;/terms&gt;</code></pre>
+
+  <h3>💡 Como pedir para a IA gerar arquivos compatíveis</h3>
+  <p>Você pode solicitar à IA:</p>
+  <blockquote>Gere um arquivo CSV (ou JSON/XML) compatível com o formato <code>DatabaseManager</code> do GlossarioBUDA, com os campos <code>source_term</code>, <code>source_language</code>, <code>target_term</code>, <code>target_language</code>, <code>context</code>, <code>contributor</code> e <code>notes</code>.</blockquote>
+  <p>A IA fornecerá um conteúdo pronto para ser salvo em um arquivo <code>.csv</code>, <code>.json</code> ou <code>.xml</code>, que poderá ser importado diretamente para o banco de dados do aplicativo.</p>
+
+  <h3>🪶 Importando os arquivos</h3>
+  <p>Aperte no botão de carregar dados, selecione o arquivo gerado (CSV, JSON ou XML).</p>
+  
+  <p>Esses formatos são totalmente compatíveis com o sistema do <strong>GlossárioBUDA</strong>, garantindo que os dados possam ser carregados, sincronizados e atualizados corretamente sem editar o banco de dados diretamente.</p>
+
+
+    <h2 id="exportacao">12. Exportação para WhatsApp -> <a href="#indice"> Índice</a></h2>
+    <p>O Glossário BUDA pode exportar termos formatados para compartilhamento no WhatsApp.</p>
+
+    <h3>Tipos de Exportação</h3>
+    
+    <h4>Termos em incrementos de 10, 25, 100 e até 1000 termos adicionados recentemente</h4>
+    <ul>
+        <li>Útil para compartilhar atualizações significantes</li>
+    </ul>
+
+    <h3>Processo de Exportação</h3>
+    <ol>
+        <li>Clique no botão <strong>📤 Exportar</strong></li>
+        <li>Uma janela de seleção aparece</li>
+        <li>Escolha o tipo de exportação:
+            <ul>
+                <li>⚪ 10 Termos</li>
+                <li>⚪ 25 termos</li>
+                <li>⚪ 100 termos</li>
+                <li>⚪ ATé 1000 termos</li>
+
+            </ul>
+        </li>
+        <li>Clique em <strong>"Exportar"</strong> (botão verde)</li>
+    </ol>
+
+    <h3>Resultado da Exportação</h3>
+    <p>Uma nova janela abre com o texto formatado. O texto está pronto para copiar.</p>
+    
+    <p><strong>Formato de cada termo:</strong></p>
+    <pre>📚 Termo: [termo original] ([idioma])
+🔤 Tradução: [tradução] ([idioma])
+📖 Contexto: [contexto se houver]
+
+━━━━━━━━━━━━━━━━━</pre>
+
+    <h3>Copiar e Compartilhar</h3>
+    <p><strong>Método 1 - Seleção Manual:</strong></p>
+    <ol>
+        <li>Clique e arraste para selecionar todo o texto</li>
+        <li>Pressione <strong>Ctrl+C</strong> (Windows) ou <strong>Cmd+C</strong> (macOS)</li>
+        <li>Abra o WhatsApp</li>
+        <li>Cole no chat desejado (<strong>Ctrl+V</strong> ou <strong>Cmd+V</strong>)</li>
+    </ol>
+
+    <p><strong>Método 2 - Selecionar Tudo:</strong></p>
+    <ol>
+        <li>Pressione <strong>Ctrl+A</strong> (Windows) ou <strong>Cmd+A</strong> (macOS)</li>
+        <li>Pressione <strong>Ctrl+C</strong> (Windows) ou <strong>Cmd+C</strong> (macOS)</li>
+        <li>Cole no WhatsApp</li>
+    </ol>
+
+    <h3>Dicas de Compartilhamento</h3>
+    <ul>
+        <li>O texto usa <strong>emojis</strong> para melhor visualização</li>
+        <li>A formatação é preservada no WhatsApp</li>
+        <li>Você pode compartilhar em grupos de estudo</li>
+        <li>Também funciona no Telegram, Signal, etc.</li>
+    </ul>
+
+    <h2 id="status">13. Status de Verificação -> <a href="#indice"> Índice</a></h2>
+    <p>Cada termo possui um status que indica seu nível de revisão e aprovação.</p>
+
+    <h3>Níveis de Status</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Descrição</th>
+                <th>Uso Recomendado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>draft</strong></td>
+                <td>Rascunho</td>
+                <td>Termo recém-adicionado, ainda não revisado</td>
+            </tr>
+            <tr>
+                <td><strong>reviewed</strong></td>
+                <td>Revisado</td>
+                <td>Termo passou por primeira revisão</td>
+            </tr>
+            <tr>
+                <td><strong>verified</strong></td>
+                <td>Verificado</td>
+                <td>Termo verificado por especialista ou fonte confiável</td>
+            </tr>
+            <tr>
+                <td><strong>approved</strong></td>
+                <td>Aprovado</td>
+                <td>Termo oficialmente aprovado para uso público</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Alterar Status</h3>
+    <ol>
+        <li>Selecione o termo na lista</li>
+        <li>Clique em <strong>✏️ Editar</strong></li>
+        <li>No campo "Status", selecione o novo status</li>
+        <li>Clique em <strong>"Salvar"</strong></li>
+    </ol>
+
+    <h3>Fluxo de Trabalho Sugerido</h3>
+    <ol>
+        <li><strong>Adição</strong>: Novo termo começa como "draft"</li>
+        <li><strong>Revisão</strong>: Após verificação básica, mude para "reviewed"</li>
+        <li><strong>Verificação</strong>: Após consulta com especialista ou fonte, mude para "verified"</li>
+        <li><strong>Aprovação</strong>: Quando estiver pronto para uso público, mude para "approved"</li>
+    </ol>
+
+    <h2 id="atualizacoes">14. Atualizações Automáticas -> <a href="#indice"> Índice</a></h2>
+    <p>O Glossário BUDA verifica automaticamente por novas versões.</p>
+
+    <h3>Verificação Automática</h3>
+    <ul>
+        <li>Ao <strong>iniciar o aplicativo</strong>, ele verifica por atualizações</li>
+        <li>Conecta-se ao site oficial</li>
+        <li>Compara a versão atual com a versão mais recente</li>
+    </ul>
+
+    <h3>Atualizações Manuais</h3>
+    <p>Para verificar manualmente:</p>
+    <ol>
+        <li>Visite: <a href="https://glossariobudacompact.netlify.app/">https://glossariobudacompact.netlify.app/</a></li>
+        <li>Baixe a versão mais recente</li>
+        <li>Instale sobre a versão antiga</li>
+    </ol>
+
+    <h2 id="sincronizacao">15. Sincronização com a Nuvem -> <a href="#indice"> Índice</a></h2>
+    <p>O Glossário BUDA permite sincronizar seus termos com a nuvem para backup e compartilhamento entre dispositivos.</p>
+
+    <h3>Sincronizar Dados</h3>
+    <ol>
+        <li>Clique no botão <strong>🔄 Sincronizar</strong></li>
+        <li>Uma janela de sincronização aparece com opções</li>
+    </ol>
+
+    <h3>Opções de Sincronização</h3>
+    
+    <h4>Enviar Dados Locais para a Nuvem</h4>
+    <ul>
+        <li>Marque o checkbox <strong>"Enviar dados locais para a nuvem"</strong></li>
+        <li>Clique em <strong>"Sincronizar"</strong></li>
+        <li>Seus termos locais serão enviados para o servidor</li>
+        <li>Útil quando você adiciona novos termos e quer compartilhá-los</li>
+    </ul>
+
+    <h4>Baixar Dados da Nuvem</h4>
+    <ul>
+        <li>Deixe o checkbox desmarcado (padrão)</li>
+        <li>Clique em <strong>"Sincronizar"</strong></li>
+        <li>Os termos da nuvem serão baixados para seu dispositivo</li>
+        <li>Útil para atualizar seu banco de dados local</li>
+    </ul>
+
+    <h3>Verificar Duplicatas</h3>
+    <p>O sistema possui verificação automática de duplicatas:</p>
+    <ol>
+        <li>Durante a sincronização, o aplicativo verifica se há termos duplicados</li>
+        <li>Se encontrar duplicatas locais, você será notificado</li>
+        <li>Você pode escolher manter ou remover as duplicatas</li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ Importante:</strong> Sempre faça backup do seu banco de dados <code>terms.db</code> antes de sincronizar pela primeira vez. A sincronização pode sobrescrever dados locais se houver conflitos.
+    </div>
+
+    <h3>Boas Práticas de Sincronização</h3>
+    <ul>
+        <li><strong>Sincronize regularmente</strong> para manter seus dados atualizados</li>
+        <li><strong>Envie para a nuvem</strong> após adicionar vários termos novos</li>
+        <li><strong>Baixe da nuvem</strong> ao começar a trabalhar em um novo dispositivo</li>
+        <li><strong>Verifique duplicatas</strong> periodicamente para manter o banco de dados limpo</li>
+    </ul>
+
+    <h3>Status da Sincronização</h3>
+    <p>Durante o processo de sincronização, você verá mensagens de status:</p>
+    <ul>
+        <li>"Conectando ao servidor..."</li>
+        <li>"Enviando dados..."</li>
+        <li>"Baixando dados..."</li>
+        <li>"Verificando duplicatas..."</li>
+        <li>"Sincronização concluída com sucesso!"</li>
+    </ul>
+
+<h2 id="authorization">16. Autorização do Aplicativo (Windows/ MacOS) -> <a href="#indice"> Índice</a></h2>
+  <p>Se o sistema operacional (Windows, macOS ou antivírus) bloquear o <strong>GlossarioBUDA</strong> por ser um aplicativo não assinado, siga os passos abaixo para autorizar de forma segura. Isso <strong>não é contornar a proteção</strong>, mas sim informar ao sistema que o aplicativo é confiável.</p>
+
+  <h3>🪟 Windows (Defender SmartScreen ou Antivírus)</h3>
+  <ol>
+    <li><strong>Execute o instalador ou o executável normalmente.</strong> Se aparecer a janela azul do Windows Defender dizendo "O Windows protegeu o seu computador", clique em:<br>
+      <em>Mais informações → Executar assim mesmo</em>.</li>
+    <li><strong>Para antivírus (AVG, Avast, etc.):</strong> Se o aplicativo for colocado em quarentena, abra o antivírus e procure a opção <em>Histórico de Detecções</em> ou <em>Ameaças Recentes</em>. Localize o <strong>GlossarioBUDA</strong> e selecione <em>Restaurar e adicionar à lista de exceções</em>.</li>
+    <li><strong>Para execuções futuras:</strong> O aplicativo será lembrado como confiável e não voltará a ser bloqueado, a menos que seja reinstalado em outro local.</li>
+  </ol>
+
+  <h3>🍎 macOS (Gatekeeper)</h3>
+  <ol>
+    <li>Ao tentar abrir o aplicativo, pode aparecer a mensagem "Não é possível abrir porque não foi possível verificar o desenvolvedor". Vá em <em>Preferências do Sistema → Segurança e Privacidade → Geral</em> e clique em <strong>Abrir assim mesmo</strong>.</li>
+    <li>Alternativamente, segure <kbd>Ctrl</kbd> e clique sobre o aplicativo, depois selecione <strong>Abrir</strong>. O macOS perguntará se deseja abrir mesmo assim — confirme.</li>
+  </ol>
+  <p>Esses passos garantem que o aplicativo seja executado de forma legítima e segura, mantendo as proteções do sistema ativas.</p>
+
+        <h2 id="dicas">17. Dicas e Atalhos -> <a href="#indice"> Índice</a></h2>
+
+        <h3>Atalhos de Teclado</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ação</th>
+                    <th>Windows</th>
+                    <th>macOS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Copiar texto</td>
+                    <td>Ctrl+C</td>
+                    <td>Cmd+C</td>
+                </tr>
+                <tr>
+                    <td>Colar texto</td>
+                    <td>Ctrl+V</td>
+                    <td>Cmd+V</td>
+                </tr>
+                <tr>
+                    <td>Selecionar tudo</td>
+                    <td>Ctrl+A</td>
+                    <td>Cmd+A</td>
+                </tr>
+                <tr>
+                    <td>Desfazer</td>
+                    <td>Ctrl+Z</td>
+                    <td>Cmd+Z</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Dicas de Produtividade</h3>
+        <ul>
+            <li><strong>Mantenha a Vista Compacta aberta</strong> enquanto trabalha em outros aplicativos</li>
+            <li><strong>Use o botão "Recentes"</strong> para revisar rapidamente suas últimas adições</li>
+            <li><strong>Configure idiomas personalizados</strong> se trabalhar com outras línguas</li>
+            <li><strong>Use a ferramenta de diacríticos</strong></li>
+            <li><strong>Sincronize regularmente</strong> para manter backup na nuvem</li>
+        </ul>
+
+
+        <h2 id="problemas">18. Solução de Problemas -> <a href="#indice"> Índice</a></h2>
+
+        <h3>Problema: Entrada tibetana no Windows não funciona</h3>
+        <p><strong>Solução:</strong></p>
+        <ul>
+            <li>Use sempre o botão <strong>བོད་</strong> para entrada tibetana no Windows</li>
+            <li>A entrada direta de subscripts tibetanos não funciona no JavaFX no Windows</li>
+            <li>No macOS, a entrada direta funciona normalmente</li>
+        </ul>
+
+
+        <h3>Problema: Banco de dados não carrega termos</h3>
+        <p><strong>Solução:</strong></p>
+        <ul>
+            <li>Verifique se o arquivo <code>terms.db</code> existe em:
+                <ul>
+                    <li>Windows: <code>C:\Users\[SeuNome]\documentos\.glossariobuda\terms.db</code></li>   
+                    <ul>    
+                        <li>OBS! Se não encontrar a pasta neste local, certifique-se que está na pasta do windows não da nuvem</li>  
+                         <ul>
+                            <li>A pasta do windows é bege não é de emoji</li>
+                        </ul> 
+                    </ul>  
+                    <li>macOS: <code>/Users/[SeuNome]/documentos/.glossariobuda/terms.db</code></li>
+                </ul>
+            </li>
+            <li>Se o arquivo estiver corrompido, restaure de um backup</li>
+            <li>Se não houver backup, importe novamente o glossário XML</li>
+        </ul>
+
+        <h3>Problema: Busca não encontra termos com diacríticos</h3>
+        <p><strong>Solução:</strong></p>
+        <ul>
+            <li>A busca deve funcionar independente de diacríticos</li>
+            <li>Tente buscar sem diacríticos primeiro (ex: <code>samatha</code> em vez de <code>śamatha</code>)</li>
+        </ul>
+
+    
+        <h3>Problema: Exportação para WhatsApp perde formatação</h3>
+        <p><strong>Solução:</strong></p>
+        <ul>
+            <li>Use <strong>Ctrl+A</strong> e <strong>Ctrl+C</strong> para copiar todo o texto</li>
+            <li>Cole diretamente no WhatsApp sem editar</li>
+            <li>Emojis e quebras de linha devem ser preservados</li>
+        </ul>
+
+        <h3>Problema: Importação de glossário falha</h3>
+        <p><strong>Solução:</strong></p>
+        <ul>
+            <li>Verifique se o arquivo XML está no formato correto</li>
+            <li>Certifique-se de o csv não está em uma só linha</li>
+            <li>Certifique-se que o excel está configurado para receber UTF-8 (com suporte de diacríticos)</li>
+            <li>Verifique os logs de erro para detalhes específicos</li>
+            <li>Tente importar um arquivo menor primeiro para testar</li>
+        </ul>
+
+        <h3>Problema: Sincronização falha</h3>
+        <p><strong>Solução:</strong></p>
+        <ul>
+            <li>Verifique sua conexão com a internet</li>
+            <li>Certifique-se de que o servidor está acessível</li>
+            <li>Tente novamente após alguns minutos</li>
+            <li>Se o problema persistir, faça backup local do seu banco de dados</li>
+        </ul>
+
+        <h3>Problema: Duplicatas após sincronização</h3>
+        <p><strong>Solução:</strong></p>
+        <ul>
+            <li>Use a função de verificação de duplicatas</li>
+            <li>Revise manualmente os termos duplicados</li>
+            <li>Remova as duplicatas desnecessárias</li>
+            <li>Sincronize novamente para atualizar a nuvem</li>
+        </ul>
+
+        <h3>Problema: Caracteres tibetanos não aparecem corretamente</h3>
+        <p><strong>Solução:</strong></p>
+        <ul>
+            <li>Instale fontes tibetanas no seu sistema:
+                <ul>
+                    <li>Windows: Instale fontes como "Jomolhari", "Himalayan" ou "Tibetan Machine Uni"</li>
+                    <li>macOS: Fontes tibetanas geralmente já estão incluídas</li>
+                </ul>
+            </li>
+            <li>Reinicie o aplicativo após instalar fontes</li>
+        </ul>
+
+
+        <h3>Contato e Suporte</h3>
+        <p>Para problemas não resolvidos:</p>
+        <ul>
+            <li>Visite o repositório no GitHub: <a href="https://github.com/TashiRabten/GlossarioBUDA">https://github.com/TashiRabten/GlossarioBUDA</a></li>
+            <li>Abra uma "Issue" descrevendo o problema</li>
+            <li>Inclua informações sobre seu sistema operacional e versão do aplicativo</li>
+        </ul>
+
+        <div class="footer">
+            <h3>Apêndice A: Recursos de Estudo Budista</h3>
+            <ul style="text-align: left; display: inline-block;">
+            <p><strong>Glossários online:</strong></p>
+                <li>84000.co - Traduções de sūtras</li>
+                <li>Lotsawa House - Textos tibetanos</li>
+                <li>Digital Dictionary of Buddhism</li>
+            </ul>
+            
+            <hr style="margin: 30px 0;">
+            
+            <p><strong>Fim do Manual do Usuário</strong></p>
+            <p><em>Última atualização: Versão 1.1.3 - Outubro 2025</em></p>
+            <p>Desenvolvido por Tashi Rabten</p>
+        </div>
+
+<hr>
+
+
+
+</body>
+</html>
